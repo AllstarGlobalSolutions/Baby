@@ -155,60 +155,62 @@ namespace Baby.Controllers
 
 			if ( ModelState.IsValid )
 			{
-				var org = new Organization
-				{
-					OrganizationId = Guid.NewGuid(),
-					Name = model.OrganizationName,
-					OfficialOrganizationId = model.OfficialOrganizationId,
-					TimeZone = model.TimeZone,
-					Status = "New"
-				};
-
-				db.Organizations.Add( org );
-
-				var email = new Email
-				{
-					EmailId = Guid.NewGuid(),
-					Type = "Work",
-					Address = model.Email,
-					OrganizationId = org.OrganizationId
-				};
-				db.Emails.Add( email );
-
-				var address = new Address
-				{
-					AddressId = Guid.NewGuid(),
-					Type = "Work",
-					Street1 = model.StreetAddress1,
-					Street2 = model.StreetAddress2,
-					District = model.District,
-					City = model.City,
-					StateOrProvince = model.StateOrProvince,
-					CountryId = model.CountryId,
-					PostalCode = model.PostalCode,
-					OrganizationId = org.OrganizationId
-				};
-				db.Addresses.Add( address );
-
-				var phone = new Phone
-				{
-					PhoneId = Guid.NewGuid(),
-					Type = "Work",
-					Number = model.PhoneNumber,
-					OrganizationId = org.OrganizationId
-				};
-				db.Phones.Add( phone );
-
-				var user = new ApplicationUser
-				{
-					UserName = model.UserName,
-					Email = model.Email,
-					Surname = model.Surname,
-					OrganizationId = org.OrganizationId
-				};
-
+				Guid orgGuid = Guid.NewGuid();
 				try
 				{
+					var org = new Organization
+					{
+						OrganizationId = orgGuid,
+						Name = model.OrganizationName,
+						OfficialOrganizationId = model.OfficialOrganizationId,
+						TimeZone = model.TimeZone,
+						Status = "New"
+					};
+
+					db.Organizations.Add( org );
+					db.SaveChanges();
+
+					var email = new Email
+					{
+						EmailId = Guid.NewGuid(),
+						Type = "Work",
+						Address = model.Email,
+						OrganizationId = orgGuid
+					};
+					db.Emails.Add( email );
+
+					var address = new Address
+					{
+						AddressId = Guid.NewGuid(),
+						Type = "Work",
+						Street1 = model.StreetAddress1,
+						Street2 = model.StreetAddress2,
+						District = model.District,
+						City = model.City,
+						StateOrProvince = model.StateOrProvince,
+						CountryId = model.CountryId,
+						PostalCode = model.PostalCode,
+						OrganizationId = orgGuid
+					};
+					db.Addresses.Add( address );
+
+					var phone = new Phone
+					{
+						PhoneId = Guid.NewGuid(),
+						Type = "Work",
+						Number = model.PhoneNumber,
+						OrganizationId = orgGuid
+					};
+					db.Phones.Add( phone );
+
+					var user = new ApplicationUser
+					{
+						UserName = model.UserName,
+						Email = model.Email,
+						Surname = model.Surname,
+						OrganizationId = orgGuid
+					};
+
 					var result = await UserManager.CreateAsync( user, model.Password );
 
 					if ( result.Succeeded )
@@ -226,8 +228,13 @@ namespace Baby.Controllers
 
 					AddErrors( result );
 				}
-				catch ( Exception e )
+				catch ( Exception )
 				{
+					// we need to delete the organization if it exists
+					Organization org = db.Organizations.Find( orgGuid );
+					db.Organizations.Remove( org );
+					db.SaveChanges();
+
 					ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 					return View();
 				}
