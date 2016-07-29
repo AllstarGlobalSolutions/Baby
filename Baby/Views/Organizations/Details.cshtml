@@ -1,0 +1,107 @@
+﻿@model Baby.Models.Organization
+
+@{
+   ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Organization</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @{ /*
+        <dt>
+            @Html.DisplayNameFor( model => model.ProcessedBy.Surname )
+        </dt>
+
+        <dd>
+            @Html.DisplayFor( model => model.ProcessedBy.Surname )
+        </dd>
+          */ }
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OfficialOrganizationId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OfficialOrganizationId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LargeLogo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LargeLogo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SmallLogo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SmallLogo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WeChatCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WeChatCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeZone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeZone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationSubmissionDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationSubmissionDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationApproveRejectDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationApproveRejectDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RejectionReason)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RejectionReason)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.OrganizationId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
