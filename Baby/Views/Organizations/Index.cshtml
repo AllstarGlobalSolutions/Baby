@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Baby.Models.Organization>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        @{ /*
+        <th>
+            @Html.DisplayNameFor(model => model.ProcessedBy.Surname)
+        </th>*/ }
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OfficialOrganizationId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LargeLogo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SmallLogo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WeChatCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeZone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ApplicationSubmissionDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ApplicationApproveRejectDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RejectionReason)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        @{ /*<td>
+            @Html.DisplayFor(modelItem => item.ProcessedBy.Surname)
+        </td> */ }
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OfficialOrganizationId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LargeLogo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SmallLogo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WeChatCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeZone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApplicationSubmissionDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApplicationApproveRejectDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RejectionReason)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.OrganizationId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.OrganizationId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.OrganizationId })
+        </td>
+    </tr>
+}
+
+</table>
