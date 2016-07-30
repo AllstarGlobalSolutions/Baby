@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AddressesController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\EmailsController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PhonesController.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Models\Phone.cs" />
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
+    <Compile Include="Models\ViewModels\ApplicationViewModel.cs" />
     <Compile Include="Models\ViewModels\VerifyPhoneNumberViewModel.cs" />
     <Compile Include="Models\ViewModels\AddPhoneNumberViewModel.cs" />
     <Compile Include="Models\ViewModels\ChangePasswordViewModel.cs" />
@@ -346,6 +348,11 @@
     <Content Include="Views\Phones\Edit.cshtml" />
     <Content Include="Views\Phones\Index.cshtml" />
     <EmbeddedResource Include="ViewResources\countries.csv" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\Accept.cshtml" />
+    <Content Include="Views\Admin\Reject.cshtml" />
+    <Content Include="Views\Account\ApplicationSubmitted.cshtml" />
+    <Content Include="Views\Account\Apply.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

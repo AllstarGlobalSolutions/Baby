@@ -36,9 +36,8 @@ namespace Baby.Models
 
 		public byte[] WeChatCode { get; set; }
 
-		[Required]
-		[StringLength( 50 )]
-		public string TimeZone { get; set; }
+		[StringLength( 30 )]
+		public string TimeZoneId { get; set; }
 
 		public DateTime? ApplicationSubmissionDate { get; set; }
 
@@ -50,7 +49,7 @@ namespace Baby.Models
 //		public string ProcessedById { get; set; }
 
 		[Required]
-		[StringLength( 15 )]
+		[StringLength( 25 )]
 		public string Status { get; set; }
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]

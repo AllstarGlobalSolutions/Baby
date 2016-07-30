@@ -8,7 +8,9 @@
 	{
 		protected override void Seed( ApplicationDbContext context )
 		{
+			AddAdminUser( context );
 			ReadAndInsertCountries( context );
+
 			base.Seed( context );
 		}
 
@@ -23,6 +25,7 @@
 			{
 				StreamReader sr = new StreamReader( stream );
 
+				// loop until we reach the en of the file
 				while ( !sr.EndOfStream )
 				{
 					string line = sr.ReadLine();
@@ -33,6 +36,11 @@
 
 				context.SaveChanges();
 			} // using ( Stream stream = this.GetType().Assembly.GetManifestResourceStream( "Baby.ViewResources.countries.csv" ) )
+		}
+
+		protected void AddAdminUser( ApplicationDbContext context )
+		{
+
 		}
 	}
 }

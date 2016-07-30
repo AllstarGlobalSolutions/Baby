@@ -54,6 +54,97 @@ namespace Baby.Controllers
 			}
 		}
 
+		// GET: /Account/Apply
+		[AllowAnonymous]
+		public ActionResult Apply()
+		{
+			ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
+			return View();
+		}
+
+		// POST: /Account/Apply
+		[AllowAnonymous]
+		[HttpPost]
+		public ActionResult Apply( ApplicationViewModel model )
+		{
+			if ( ModelState.IsValid )
+			{
+				Guid orgGuid = Guid.NewGuid();
+
+				try
+				{
+					var org = new Organization
+					{
+						OrganizationId = orgGuid,
+						Name = model.OrganizationName,
+						OfficialOrganizationId = model.OfficialOrganizationId,
+						Status = "Submitted",
+						ApplicationSubmissionDate = DateTime.Now,
+					};
+
+					db.Organizations.Add( org );
+					db.SaveChanges();
+
+					var email = new Email
+					{
+						EmailId = Guid.NewGuid(),
+						Type = "Work",
+						Address = model.Email,
+						OrganizationId = orgGuid
+					};
+					db.Emails.Add( email );
+
+					var address = new Address
+					{
+						AddressId = Guid.NewGuid(),
+						Type = "Mailing",
+						Street1 = model.StreetAddress1,
+						Street2 = model.StreetAddress2,
+						District = model.District,
+						City = model.City,
+						StateOrProvince = model.StateOrProvince,
+						CountryId = model.CountryId,
+						PostalCode = model.PostalCode,
+						OrganizationId = orgGuid
+					};
+					db.Addresses.Add( address );
+
+					var phone = new Phone
+					{
+						PhoneId = Guid.NewGuid(),
+						Type = "Work",
+						Number = model.PhoneNumber,
+						OrganizationId = orgGuid
+					};
+					db.Phones.Add( phone );
+
+					return RedirectToAction( "ApplicationSubmitted" );
+				}
+				catch ( Exception )
+				{
+					// we need to delete the organization if it exists
+					Organization org = db.Organizations.Find( orgGuid );
+					db.Organizations.Remove( org );
+					db.SaveChanges();
+
+					ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
+					return View();
+				}
+			}
+
+			// If we got this far, something failed, redisplay form
+			ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
+			return View( model );
+
+		}
+
+		// GET: /Account/ApplicationSubmitted
+		[AllowAnonymous]
+		public ActionResult ApplicationSubmitted()
+		{
+			return View();
+		}
+
 		//
 		// GET: /Account/Login
 		[AllowAnonymous]
@@ -81,6 +172,11 @@ namespace Baby.Controllers
 			switch ( result )
 			{
 				case SignInStatus.Success:
+					ApplicationUser user = ( ApplicationUser )UserManager.FindById( User.Identity.GetUserId() );
+					if ( user.OrganizationId == null )
+					{
+						return RedirectToLocal( "Admin" );
+					}
 					return RedirectToLocal( returnUrl );
 				case SignInStatus.LockedOut:
 					return View( "Lockout" );
@@ -141,7 +237,6 @@ namespace Baby.Controllers
 		[AllowAnonymous]
 		public ActionResult Register()
 		{
-			ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			return View();
 		}
 
@@ -152,96 +247,34 @@ namespace Baby.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Register( RegisterViewModel model )
 		{
-
 			if ( ModelState.IsValid )
 			{
-				Guid orgGuid = Guid.NewGuid();
-				try
+				var user = new ApplicationUser
 				{
-					var org = new Organization
-					{
-						OrganizationId = orgGuid,
-						Name = model.OrganizationName,
-						OfficialOrganizationId = model.OfficialOrganizationId,
-						TimeZone = model.TimeZone,
-						Status = "New"
-					};
+					UserName = model.UserName,
+					Surname = model.Surname,
+					GivenNames = model.GivenNames
+				};
 
-					db.Organizations.Add( org );
-					db.SaveChanges();
+				var result = await UserManager.CreateAsync( user, model.Password );
 
-					var email = new Email
-					{
-						EmailId = Guid.NewGuid(),
-						Type = "Work",
-						Address = model.Email,
-						OrganizationId = orgGuid
-					};
-					db.Emails.Add( email );
-
-					var address = new Address
-					{
-						AddressId = Guid.NewGuid(),
-						Type = "Work",
-						Street1 = model.StreetAddress1,
-						Street2 = model.StreetAddress2,
-						District = model.District,
-						City = model.City,
-						StateOrProvince = model.StateOrProvince,
-						CountryId = model.CountryId,
-						PostalCode = model.PostalCode,
-						OrganizationId = orgGuid
-					};
-					db.Addresses.Add( address );
-
-					var phone = new Phone
-					{
-						PhoneId = Guid.NewGuid(),
-						Type = "Work",
-						Number = model.PhoneNumber,
-						OrganizationId = orgGuid
-					};
-					db.Phones.Add( phone );
-
-					var user = new ApplicationUser
-					{
-						UserName = model.UserName,
-						Email = model.Email,
-						Surname = model.Surname,
-						OrganizationId = orgGuid
-					};
-
-					var result = await UserManager.CreateAsync( user, model.Password );
-
-					if ( result.Succeeded )
-					{
-						await SignInManager.SignInAsync( user, isPersistent: false, rememberBrowser: false );
-
-						// For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-						// Send an email with this link
-						// string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-						// var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-						// await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-						return RedirectToAction( "Index", "Home" );
-					}
-
-					AddErrors( result );
-				}
-				catch ( Exception )
+				if ( result.Succeeded )
 				{
-					// we need to delete the organization if it exists
-					Organization org = db.Organizations.Find( orgGuid );
-					db.Organizations.Remove( org );
-					db.SaveChanges();
+					await SignInManager.SignInAsync( user, isPersistent: false, rememberBrowser: false );
 
-					ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
-					return View();
+					// For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+					// Send an email with this link
+					// string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+					// var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+					// await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+					return RedirectToAction( "Index", "Home" );
 				}
+
+				AddErrors( result );
 			}
 
 			// If we got this far, something failed, redisplay form
-			ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			return View( model );
 		}
 

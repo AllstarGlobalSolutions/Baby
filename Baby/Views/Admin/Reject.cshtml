@@ -1,0 +1,65 @@
+﻿@model Baby.Models.Organization
+
+@{
+   ViewBag.Title = "Reject";
+}
+
+<h2>Reject</h2>
+
+<h3>Are you sure you want to reject the application of this organization?</h3>
+<div>
+    <h4>Organization</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor( model => model.Name )
+        </dt>
+
+        <dd>
+            @Html.DisplayFor( model => model.Name )
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor( model => model.OfficialOrganizationId )
+        </dt>
+
+        <dd>
+            @Html.DisplayFor( model => model.OfficialOrganizationId )
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor( model => model.ApplicationApproveRejectDate )
+        </dt>
+
+        <dd>
+            @Html.DisplayFor( model => model.ApplicationApproveRejectDate )
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor( model => model.Status )
+        </dt>
+
+        <dd>
+            @Html.DisplayFor( model => model.Status )
+        </dd>
+
+    </dl>
+
+    @using ( Html.BeginForm() )
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor( model => model.RejectionReason, htmlAttributes: new { @class = "control-label col-md-2" } )
+            <div class="col-md-10">
+                @Html.EditorFor( model => model.RejectionReason, new { htmlAttributes = new { @class = "form-control" } } )
+                @Html.ValidationMessageFor( model => model.RejectionReason, "", new { @class = "text-danger" } )
+            </div>
+        </div>
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink( "Back to List", "Index" )
+        </div>
+    }
+</div>
