@@ -56,6 +56,16 @@ namespace Baby.Controllers
 			}
 		}
 
+		// GET: /Account/Users
+		public ActionResult Users()
+		{
+			//			var addresses = db.Addresses.Include( a => a.Advertiser ).Include( a => a.Country ).Include( a => a.Organization ).Include( a => a.User );
+			//			return View( addresses.ToList() );
+			var user = UserManager.FindById( User.Identity.GetUserId() );
+			var users = db.Users.Where( u => u.OrganizationId == user.OrganizationId );
+			return View( users.ToList() );
+		}
+
 		// GET: /Account/Apply
 		[AllowAnonymous]
 		public ActionResult Apply()
@@ -95,6 +105,7 @@ namespace Baby.Controllers
 						OrganizationId = orgGuid
 					};
 					db.Emails.Add( email );
+					db.SaveChanges();
 
 					var address = new Address
 					{
@@ -110,6 +121,7 @@ namespace Baby.Controllers
 						OrganizationId = orgGuid
 					};
 					db.Addresses.Add( address );
+					db.SaveChanges();
 
 					var phone = new Phone
 					{
@@ -119,6 +131,7 @@ namespace Baby.Controllers
 						OrganizationId = orgGuid
 					};
 					db.Phones.Add( phone );
+					db.SaveChanges();
 
 					return RedirectToAction( "ApplicationSubmitted" );
 				}
@@ -270,6 +283,7 @@ namespace Baby.Controllers
 				var user = new ApplicationUser
 				{
 					UserName = model.UserName,
+					Email = model.Email,
 					Surname = model.Surname,
 					GivenNames = model.GivenNames,
 					OrganizationId = model.OrganizationId
@@ -323,6 +337,75 @@ namespace Baby.Controllers
 			// If we got this far, something failed, redisplay form
 			return View( model );
 		}
+
+		//
+		// GET: /Account/Create
+		[Authorize]
+		public ActionResult CreateUser()
+		{
+			return View();
+		}
+
+		//
+		// POST: /Account/Create
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> CreateUser( RegisterViewModel model )
+		{
+			if ( ModelState.IsValid )
+			{
+				Guid? orgid = UserManager.FindById( User.Identity.GetUserId() ).OrganizationId;
+
+				var user = new ApplicationUser
+				{
+					UserName = model.UserName,
+					Email = model.Email,
+					Surname = model.Surname,
+					GivenNames = model.GivenNames,
+					OrganizationId = orgid
+				};
+
+				var result = await UserManager.CreateAsync( user, model.Password );
+
+				if ( result.Succeeded )
+				{
+					try
+					{
+						var Email = new Email
+						{
+							EmailId = Guid.NewGuid(),
+							Address = model.Email,
+							Type = "Work",
+							UserId = user.Id
+						};
+						db.Emails.Add( Email );
+
+						var Phone = new Phone
+						{
+							PhoneId = Guid.NewGuid(),
+							Number = model.Phone,
+							Type = "Work",
+							UserId = user.Id
+						};
+						db.Phones.Add( Phone );
+
+						db.SaveChanges();
+					}
+					catch ( Exception /*e*/ )
+					{
+						//TODO handle problems with saving email and phone number here
+					}
+
+					return RedirectToAction( "Users", "Account" );
+				}
+
+				AddErrors( result );
+			}
+
+			// If we got this far, something failed, redisplay form
+			return View( model );
+		}
+
 
 		//
 		// GET: /Account/ConfirmEmail

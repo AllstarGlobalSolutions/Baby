@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Baby.Models.ViewModels
 {
-	public class RegisterViewModel
+	public class AddAdminUserViewModel
 	{
-		public Guid? OrganizationId { get; set; }
-
 		[Required]
 		[Display( Name = "Surname" )]
 		public string Surname { get; set; }

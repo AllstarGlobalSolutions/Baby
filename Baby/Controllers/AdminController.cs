@@ -63,6 +63,11 @@ namespace Baby.Controllers
 			return View();
 		}
 
+		public void SendApplicationRejectedEmail()
+		{
+			//TODO: This functionality need to work
+		}
+
 		// GET: Admin/Delete/5
 		public ActionResult Delete( Guid id )
 		{
@@ -83,6 +88,12 @@ namespace Baby.Controllers
 			{
 				return View();
 			}
+		}
+
+		// GET: Admin/AddUser
+		public ActionResult AddUser()
+		{
+			return View();
 		}
 	}
 }

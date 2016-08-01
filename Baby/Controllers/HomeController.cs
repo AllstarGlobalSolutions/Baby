@@ -28,11 +28,6 @@ namespace Baby.Controllers
 				{
 					return RedirectToAction( "Index", "Admin" );
 				}
-				else
-				{
-					HttpContext.GetOwinContext().Authentication.SignOut( DefaultAuthenticationTypes.ApplicationCookie );
-					return RedirectToAction( "Index", "Home" );
-				}
 			}
 			return View();
 		}

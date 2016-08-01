@@ -198,6 +198,7 @@
     <Compile Include="Controllers\CustomNeedTypesController.cs" />
     <Compile Include="Controllers\DonationsController.cs" />
     <Compile Include="Controllers\EmailsController.cs" />
+    <Compile Include="Controllers\NeedsController.cs" />
     <Compile Include="Controllers\NeedTypesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PhonesController.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ViewModels\ApplicationViewModel.cs" />
+    <Compile Include="Models\ViewModels\AddAdminUserViewModel.cs" />
     <Compile Include="Models\ViewModels\VerifyPhoneNumberViewModel.cs" />
     <Compile Include="Models\ViewModels\AddPhoneNumberViewModel.cs" />
     <Compile Include="Models\ViewModels\ChangePasswordViewModel.cs" />
@@ -385,6 +387,14 @@
     <Content Include="Views\Currencies\Details.cshtml" />
     <Content Include="Views\Currencies\Edit.cshtml" />
     <Content Include="Views\Currencies\Index.cshtml" />
+    <Content Include="Views\Admin\AddUser.cshtml" />
+    <Content Include="Views\Account\Users.cshtml" />
+    <Content Include="Views\Account\CreateUser.cshtml" />
+    <Content Include="Views\Needs\Create.cshtml" />
+    <Content Include="Views\Needs\Delete.cshtml" />
+    <Content Include="Views\Needs\Details.cshtml" />
+    <Content Include="Views\Needs\Edit.cshtml" />
+    <Content Include="Views\Needs\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
