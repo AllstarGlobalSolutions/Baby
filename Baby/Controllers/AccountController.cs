@@ -172,10 +172,10 @@ namespace Baby.Controllers
 			switch ( result )
 			{
 				case SignInStatus.Success:
-					ApplicationUser user = ( ApplicationUser )UserManager.FindById( User.Identity.GetUserId() );
+					ApplicationUser user = db.Users.FirstOrDefault( u => u.UserName == model.UserName );
 					if ( user.OrganizationId == null )
 					{
-						return RedirectToLocal( "Admin" );
+						return RedirectToAction( "Index", "Admin" );
 					}
 					return RedirectToLocal( returnUrl );
 				case SignInStatus.LockedOut:

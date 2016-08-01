@@ -9,6 +9,7 @@ namespace Baby.Models.ViewModels
 		[Required]
 		public string OrganizationName { get; set; }
 
+		[Required]
 		[Display( Name = "Organization Identification #" )]
 		public string OfficialOrganizationId { get; set; }
 

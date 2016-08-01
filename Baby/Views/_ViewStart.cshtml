@@ -1,3 +1,10 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+   if ( ViewContext.ViewBag.IsAdmin != null && ViewContext.ViewBag.IsAdmin == true )
+   {
+       Layout = "~/Views/Shared/_AdminLayout.cshtml";
+   }
+   else
+   {
+       Layout = "~/Views/Shared/_Layout.cshtml";
+   }
 }

@@ -353,6 +353,8 @@
     <Content Include="Views\Admin\Reject.cshtml" />
     <Content Include="Views\Account\ApplicationSubmitted.cshtml" />
     <Content Include="Views\Account\Apply.cshtml" />
+    <Content Include="Views\Admin\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

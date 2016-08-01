@@ -3,6 +3,8 @@
 	using System;
 	using System.IO;
 	using System.Data.Entity;
+	using Microsoft.AspNet.Identity.EntityFramework;
+	using Microsoft.AspNet.Identity;
 
 	public class ApplicationDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
 	{
@@ -40,7 +42,10 @@
 
 		protected void AddAdminUser( ApplicationDbContext context )
 		{
-
+			var userStore = new UserStore<ApplicationUser>( context );
+			var userManager = new UserManager<ApplicationUser>( userStore );
+			var userToInsert = new ApplicationUser { UserName = "admin", Surname = "Admin" };
+			userManager.Create( userToInsert, "Password@123" );
 		}
 	}
 }

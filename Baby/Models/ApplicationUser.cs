@@ -35,6 +35,11 @@ namespace Baby.Models
 
 //		public virtual ICollection<Organization> ProcessedOrganizations { get; set; }
 
+		public bool IsAdmin
+		{
+			get { return this.OrganizationId == null; }
+		}
+
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync( UserManager<ApplicationUser> manager )
 		{
 			// Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

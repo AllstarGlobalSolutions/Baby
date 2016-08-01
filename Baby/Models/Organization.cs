@@ -20,6 +20,7 @@ namespace Baby.Models
 			Phones = new HashSet<Phone>();
 			ApplicationUsers = new HashSet<ApplicationUser>();
 		}
+
 		[Key]
 		public Guid OrganizationId { get; set; }
 
@@ -27,6 +28,7 @@ namespace Baby.Models
 		[StringLength( 40 )]
 		public string Name { get; set; }
 
+		[Required]
 		[StringLength( 20 )]
 		public string OfficialOrganizationId { get; set; }
 
@@ -39,7 +41,7 @@ namespace Baby.Models
 		[StringLength( 30 )]
 		public string TimeZoneId { get; set; }
 
-		public DateTime? ApplicationSubmissionDate { get; set; }
+		public DateTime ApplicationSubmissionDate { get; set; }
 
 		public DateTime? ApplicationApproveRejectDate { get; set; }
 
