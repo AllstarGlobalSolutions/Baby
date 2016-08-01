@@ -320,6 +320,8 @@ namespace Baby.Models
 		public virtual DbSet<OrganizationCurrency> OrganizationCurrencies { get; set; }
 		public virtual DbSet<Phone> Phones { get; set; }
 		public virtual DbSet<Region> Regions { get; set; }
+
+		public System.Data.Entity.DbSet<Baby.Models.CustomNeedType> CustomNeedTypes { get; set; }
 		//		public virtual DbSet<User> Users { get; set; }
 
 	}

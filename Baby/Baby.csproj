@@ -194,9 +194,14 @@
   <ItemGroup>
     <Compile Include="Controllers\AddressesController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CurrenciesController.cs" />
+    <Compile Include="Controllers\CustomNeedTypesController.cs" />
+    <Compile Include="Controllers\DonationsController.cs" />
     <Compile Include="Controllers\EmailsController.cs" />
+    <Compile Include="Controllers\NeedTypesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PhonesController.cs" />
+    <Compile Include="Controllers\RegionsController.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbInitializer.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -216,6 +221,7 @@
     <Compile Include="Models\AdTargetDonorProfile.cs" />
     <Compile Include="Models\Advertisement.cs" />
     <Compile Include="Models\Advertiser.cs" />
+    <Compile Include="Models\CustomNeedType.cs" />
     <Compile Include="Models\ViewModels\ConfigureTwoFactorViewModel.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Currency.cs" />
@@ -353,8 +359,32 @@
     <Content Include="Views\Admin\Reject.cshtml" />
     <Content Include="Views\Account\ApplicationSubmitted.cshtml" />
     <Content Include="Views\Account\Apply.cshtml" />
-    <Content Include="Views\Admin\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\CustomNeedTypes\Create.cshtml" />
+    <Content Include="Views\CustomNeedTypes\Delete.cshtml" />
+    <Content Include="Views\CustomNeedTypes\Details.cshtml" />
+    <Content Include="Views\CustomNeedTypes\Edit.cshtml" />
+    <Content Include="Views\CustomNeedTypes\Index.cshtml" />
+    <Content Include="Views\NeedTypes\Create.cshtml" />
+    <Content Include="Views\NeedTypes\Delete.cshtml" />
+    <Content Include="Views\NeedTypes\Details.cshtml" />
+    <Content Include="Views\NeedTypes\Edit.cshtml" />
+    <Content Include="Views\NeedTypes\Index.cshtml" />
+    <Content Include="Views\Donations\Create.cshtml" />
+    <Content Include="Views\Donations\Delete.cshtml" />
+    <Content Include="Views\Donations\Details.cshtml" />
+    <Content Include="Views\Donations\Edit.cshtml" />
+    <Content Include="Views\Donations\Index.cshtml" />
+    <Content Include="Views\Regions\Create.cshtml" />
+    <Content Include="Views\Regions\Delete.cshtml" />
+    <Content Include="Views\Regions\Details.cshtml" />
+    <Content Include="Views\Regions\Edit.cshtml" />
+    <Content Include="Views\Regions\Index.cshtml" />
+    <Content Include="Views\Currencies\Create.cshtml" />
+    <Content Include="Views\Currencies\Delete.cshtml" />
+    <Content Include="Views\Currencies\Details.cshtml" />
+    <Content Include="Views\Currencies\Edit.cshtml" />
+    <Content Include="Views\Currencies\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

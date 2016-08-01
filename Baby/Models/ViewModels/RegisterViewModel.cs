@@ -8,10 +8,13 @@ namespace Baby.Models.ViewModels
 	public class RegisterViewModel
 	{
 		[Required]
+		public Guid OrganizationId { get; set; }
+
+		[Required]
 		[Display( Name = "Surname" )]
 		public string Surname { get; set; }
 
-		[Display( Name = "GivenNames" )]
+		[Display( Name = "GivenName(s)" )]
 		public string GivenNames { get; set; }
 
 		[Required]
@@ -28,5 +31,14 @@ namespace Baby.Models.ViewModels
 		[Display( Name = "Confirm password" )]
 		[Compare( "Password", ErrorMessage = "The password and confirmation password do not match." )]
 		public string ConfirmPassword { get; set; }
+
+		[Required]
+		[EmailAddress]
+		[Display( Name = "Email Address" )]
+		public string Email { get; set; }
+
+		[Required]
+		[Display( Name = "Phone Number" )]
+		public string Phone { get; set; }
 	}
 }

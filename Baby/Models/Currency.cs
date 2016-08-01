@@ -27,6 +27,13 @@ namespace Baby.Models
 		[StringLength( 20 )]
 		public string Description { get; set; }
 
+		[Required]
+		[StringLength(3)]
+		public string Symbol { get; set; }
+
+		[Required]
+		public bool IsSymbolAfter { get; set; }
+
 		[System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]
 		public virtual ICollection<Donation> Donations { get; set; }
 

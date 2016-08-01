@@ -24,9 +24,14 @@ namespace Baby.Controllers
 			if ( User.Identity.IsAuthenticated )
 			{
 				var user = UserManager.FindById( User.Identity.GetUserId() );
-				if ( user.IsAdmin )
+				if ( user != null && user.IsAdmin )
 				{
 					return RedirectToAction( "Index", "Admin" );
+				}
+				else
+				{
+					HttpContext.GetOwinContext().Authentication.SignOut( DefaultAuthenticationTypes.ApplicationCookie );
+					return RedirectToAction( "Index", "Home" );
 				}
 			}
 			return View();

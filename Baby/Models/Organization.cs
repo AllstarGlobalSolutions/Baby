@@ -30,6 +30,7 @@ namespace Baby.Models
 
 		[Required]
 		[StringLength( 20 )]
+		[Index( IsUnique = true )]
 		public string OfficialOrganizationId { get; set; }
 
 		public byte[] LargeLogo { get; set; }

@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Baby.Models;
 using Baby.Models.ViewModels;
+using System.Data.Entity.Core;
+using System.Data.SqlClient;
 
 namespace Baby.Controllers
 {
@@ -120,8 +122,10 @@ namespace Baby.Controllers
 
 					return RedirectToAction( "ApplicationSubmitted" );
 				}
-				catch ( Exception )
+				catch ( Exception /*e*/ )
 				{
+					//TODO:  Need to handle unique constraint issues with emails an official org id - need to display error
+
 					// we need to delete the organization if it exists
 					Organization org = db.Organizations.Find( orgGuid );
 					db.Organizations.Remove( org );
@@ -129,6 +133,7 @@ namespace Baby.Controllers
 
 					ViewBag.CountryList = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 					return View();
+
 				}
 			}
 
@@ -235,9 +240,22 @@ namespace Baby.Controllers
 		//
 		// GET: /Account/Register
 		[AllowAnonymous]
-		public ActionResult Register()
+		public ActionResult Register( Guid orgid )
 		{
-			return View();
+			ApplicationUser user = db.Users.FirstOrDefault( u => u.OrganizationId == orgid );
+
+			// if this is the first time this link has been accessed for the organization (in other words, they do not have a user set up yet)
+			if ( user == default( ApplicationUser ) )
+			{
+				Organization org = db.Organizations.First( o => o.OrganizationId == orgid );
+
+				if ( org != null )
+				{
+					return View( new RegisterViewModel() { OrganizationId = orgid, Email = org.Emails.First().Address, Phone = org.Phones.First().Number } );
+				}
+			} // if ( user == default( ApplicationUser ) )
+
+			return RedirectToAction( "Account", "Login" );
 		}
 
 		//
@@ -253,13 +271,41 @@ namespace Baby.Controllers
 				{
 					UserName = model.UserName,
 					Surname = model.Surname,
-					GivenNames = model.GivenNames
+					GivenNames = model.GivenNames,
+					OrganizationId = model.OrganizationId
 				};
 
 				var result = await UserManager.CreateAsync( user, model.Password );
 
 				if ( result.Succeeded )
 				{
+					try
+					{
+						var Email = new Email
+						{
+							EmailId = Guid.NewGuid(),
+							Address = model.Email,
+							Type = "Work",
+							UserId = user.Id
+						};
+						db.Emails.Add( Email );
+
+						var Phone = new Phone
+						{
+							PhoneId = Guid.NewGuid(),
+							Number = model.Phone,
+							Type = "Work",
+							UserId = user.Id
+						};
+						db.Phones.Add( Phone );
+
+						db.SaveChanges();
+					}
+					catch ( Exception /*e*/ )
+					{
+						//TODO handle problems with saving email and phone number here
+					}
+
 					await SignInManager.SignInAsync( user, isPersistent: false, rememberBrowser: false );
 
 					// For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771

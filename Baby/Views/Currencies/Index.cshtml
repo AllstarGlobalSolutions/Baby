@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Baby.Models.Currency>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Symbol)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsSymbolAfter)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Symbol)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsSymbolAfter)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.CurrencyId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.CurrencyId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.CurrencyId })
+        </td>
+    </tr>
+}
+
+</table>

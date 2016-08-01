@@ -33,7 +33,21 @@ namespace Baby.Controllers
 		[HttpPost]
 		public ActionResult Accept( Guid id, FormCollection collection )
 		{
+			Organization org = db.Organizations.FirstOrDefault( o => o.OrganizationId == id );
+
+			if ( org != null )
+			{
+				org.ApplicationApproveRejectDate = DateTime.Now;
+				org.Status = "Application Accepted";
+				SendApplicationAcceptedEmail();
+				return RedirectToAction( "Index" );
+			}
 			return View();
+		}
+
+		public void SendApplicationAcceptedEmail()
+		{
+			//TODO: This functionality needs to work
 		}
 
 		// GET: Admin/Reject/5
