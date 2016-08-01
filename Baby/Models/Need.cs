@@ -16,6 +16,7 @@ namespace Baby.Models
 			DisplayNeeds = new HashSet<DisplayNeed>();
 			Donations = new HashSet<Donation>();
 			NeedSharings = new HashSet<NeedSharing>();
+			Images = new List<File>();
 		}
 
 		[Key]
@@ -27,11 +28,6 @@ namespace Baby.Models
 
 		[Column( TypeName = "ntext" )]
 		public string Story { get; set; }
-
-		public string ImageFileName { get; set; }
-
-		[NotMapped]
-		public HttpPostedFileBase Image { get; set; }
 
 		public bool IsUrgent { get; set; }
 
@@ -77,5 +73,7 @@ namespace Baby.Models
 		public virtual Organization Organization { get; set; }
 
 		public virtual Region Region { get; set; }
+			
+		public virtual ICollection<File> Images { get; set; }
 	}
 }

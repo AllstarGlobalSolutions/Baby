@@ -199,6 +199,7 @@
     <Compile Include="Controllers\CustomNeedTypesController.cs" />
     <Compile Include="Controllers\DonationsController.cs" />
     <Compile Include="Controllers\EmailsController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\NeedsController.cs" />
     <Compile Include="Controllers\NeedTypesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Models\Advertisement.cs" />
     <Compile Include="Models\Advertiser.cs" />
     <Compile Include="Models\CustomNeedType.cs" />
+    <Compile Include="Models\File.cs" />
     <Compile Include="Models\ViewModels\ConfigureTwoFactorViewModel.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Currency.cs" />
@@ -400,6 +402,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

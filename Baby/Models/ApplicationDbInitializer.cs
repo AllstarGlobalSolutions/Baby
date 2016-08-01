@@ -6,7 +6,7 @@
 	using Microsoft.AspNet.Identity.EntityFramework;
 	using Microsoft.AspNet.Identity;
 
-	public class ApplicationDbInitializer : CreateDatabaseIfNotExists<ApplicationDbContext>
+	public class ApplicationDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
 	{
 		protected override void Seed( ApplicationDbContext context )
 		{

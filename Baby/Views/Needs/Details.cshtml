@@ -1,138 +1,133 @@
 ﻿@model Baby.Models.Need
 
 @{
-    ViewBag.Title = "Details";
+	ViewBag.Title = "Details";
 }
 
 <h2>Details</h2>
 
 <div>
-    <h4>Need</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Country.Code)
-        </dt>
+	<h4>Need</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor( model => model.NeedType.Description )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Country.Code)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.NeedType.Description )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.NeedType.Description)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.Region.Name )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.NeedType.Description)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.Region.Name )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Organization.Name)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.Country.Name )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Organization.Name)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.Country.Name )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Region.Name)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.Caption )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Region.Name)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.Caption )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Caption)
-        </dt>
+		<dt>
+			Image
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Caption)
-        </dd>
+		<dd>
+			@if ( @Model.Images.Any() )
+			{
+				<img src="/File?id=@Model.Images.First().FileId" width="200" alt="image" />
+			}
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Story)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.Story )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Story)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.Story )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.IsUrgent )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Image)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.IsUrgent )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsUrgent)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.PublishDate )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.IsUrgent)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.PublishDate )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PublishDate)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.EndDate )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.PublishDate)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.EndDate )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.HasNeedBeenMet )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.HasNeedBeenMet )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.HasNeedBeenMet)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.IsActive )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.HasNeedBeenMet)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.IsActive )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.AmountNeeded )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.AmountNeeded )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AmountNeeded)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.AdditionalTags )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.AmountNeeded)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.AdditionalTags )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AdditionalTags)
-        </dt>
+		<dt>
+			@Html.DisplayNameFor( model => model.City )
+		</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.AdditionalTags)
-        </dd>
+		<dd>
+			@Html.DisplayFor( model => model.City )
+		</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.City)
-        </dd>
-
-    </dl>
+	</dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.NeedId }) |
-    @Html.ActionLink("Back to List", "Index")
+	@Html.ActionLink( "Edit", "Edit", new { id = Model.NeedId } ) |
+	@Html.ActionLink( "Back to List", "Index" )
 </p>
