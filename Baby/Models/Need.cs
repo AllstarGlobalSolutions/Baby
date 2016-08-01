@@ -5,6 +5,7 @@ namespace Baby.Models
 	using System.ComponentModel.DataAnnotations;
 	using System.ComponentModel.DataAnnotations.Schema;
 	using System.Data.Entity.Spatial;
+	using System.Web;
 
 	[Table( "Need" )]
 	public partial class Need
@@ -27,8 +28,10 @@ namespace Baby.Models
 		[Column( TypeName = "ntext" )]
 		public string Story { get; set; }
 
-		[MaxLength( 1 )]
-		public byte[] Image { get; set; }
+		public string ImageFileName { get; set; }
+
+		[NotMapped]
+		public HttpPostedFileBase Image { get; set; }
 
 		public bool IsUrgent { get; set; }
 
@@ -38,7 +41,7 @@ namespace Baby.Models
 		[Column( TypeName = "date" )]
 		public DateTime? EndDate { get; set; }
 
-		public bool HasNeedBitMet { get; set; }
+		public bool HasNeedBeenMet { get; set; }
 
 		public bool IsActive { get; set; }
 

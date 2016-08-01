@@ -12,11 +12,12 @@ using Baby.Models;
 using Baby.Models.ViewModels;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
+using Baby.Controllers.Base;
 
 namespace Baby.Controllers
 {
 	[Authorize]
-	public class AccountController : Controller
+	public class AccountController : BaseController
 	{
 		private ApplicationDbContext db = new ApplicationDbContext();
 		private ApplicationSignInManager _signInManager;

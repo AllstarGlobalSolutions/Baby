@@ -204,10 +204,6 @@ namespace Baby.Models
 
 			#region Need
 			modelBuilder.Entity<Need>()
-				 .Property( e => e.Image )
-				 .IsFixedLength();
-
-			modelBuilder.Entity<Need>()
 				 .Property( e => e.AmountNeeded )
 				 .HasPrecision( 18, 0 );
 

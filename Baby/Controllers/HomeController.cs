@@ -6,10 +6,11 @@ using System.Web;
 using System.Web.Mvc;
 using Baby.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Baby.Controllers.Base;
 
 namespace Baby.Controllers
 {
-	public class HomeController : Controller
+	public class HomeController : BaseController
 	{
 		protected ApplicationDbContext db = new ApplicationDbContext();
 		protected UserManager<ApplicationUser> UserManager;
