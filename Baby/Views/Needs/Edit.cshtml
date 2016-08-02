@@ -17,6 +17,7 @@
 		@Html.ValidationSummary( true, "", new { @class = "text-danger" } )
 		@Html.HiddenFor( model => model.NeedId )
 		@Html.HiddenFor( model => model.OrganizationId )
+		@Html.HiddenFor( Model => Model.FileId )
 
 		<div class="form-group">
 			@Html.LabelFor( model => model.Caption, htmlAttributes: new { @class = "control-label col-md-2" } )
@@ -34,15 +35,12 @@
 			</div>
 		</div>
 
-		@if ( Model.Images.Any() )
-		{
-			<div class="form-group">
-				<span class="control-label col-md-2"><strong>Current Avatar</strong></span>
-				<div class="col-md-10">
-					<img src="/File?id=@Model.Images.First().FileId" alt="image" width="200" />
-				</div>
+		<div class="form-group">
+			<span class="control-label col-md-2"><strong>Current Image</strong></span>
+			<div class="col-md-10">
+				<img src="/File?id=@Model.FileId" alt="image" width="200" />
 			</div>
-		}
+		</div>
 
 		<div class="form-group">
 			@Html.Label( "Image", new { @class = "control-label col-md-2" } )
@@ -50,6 +48,7 @@
 				<input type="file" id="Image" name="Image" />
 			</div>
 		</div>
+
 		<div class="form-group">
 			@Html.LabelFor( model => model.IsUrgent, htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">

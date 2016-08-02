@@ -194,6 +194,8 @@
   <ItemGroup>
     <Compile Include="Controllers\AddressesController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AdvertisementsController.cs" />
+    <Compile Include="Controllers\AdvertisersController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
     <Compile Include="Controllers\CurrenciesController.cs" />
     <Compile Include="Controllers\CustomNeedTypesController.cs" />
@@ -398,6 +400,16 @@
     <Content Include="Views\Needs\Details.cshtml" />
     <Content Include="Views\Needs\Edit.cshtml" />
     <Content Include="Views\Needs\Index.cshtml" />
+    <Content Include="Views\Advertisers\Create.cshtml" />
+    <Content Include="Views\Advertisers\Delete.cshtml" />
+    <Content Include="Views\Advertisers\Details.cshtml" />
+    <Content Include="Views\Advertisers\Edit.cshtml" />
+    <Content Include="Views\Advertisers\Index.cshtml" />
+    <Content Include="Views\Advertisements\Create.cshtml" />
+    <Content Include="Views\Advertisements\Delete.cshtml" />
+    <Content Include="Views\Advertisements\Details.cshtml" />
+    <Content Include="Views\Advertisements\Edit.cshtml" />
+    <Content Include="Views\Advertisements\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -47,10 +47,7 @@
 		</dt>
 
 		<dd>
-			@if ( @Model.Images.Any() )
-			{
-				<img src="/File?id=@Model.Images.First().FileId" width="200" alt="image" />
-			}
+			<img src="/File?id=@Model.FileId" width="200" alt="image" />
 		</dd>
 
 		<dt>

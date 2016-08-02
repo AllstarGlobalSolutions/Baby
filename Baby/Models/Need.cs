@@ -16,7 +16,6 @@ namespace Baby.Models
 			DisplayNeeds = new HashSet<DisplayNeed>();
 			Donations = new HashSet<Donation>();
 			NeedSharings = new HashSet<NeedSharing>();
-			Images = new List<File>();
 		}
 
 		[Key]
@@ -54,6 +53,10 @@ namespace Baby.Models
 
 		public Guid? CountryId { get; set; }
 
+		public Guid FileId { get; set; }
+
+		public File File { get; set; }
+
 		[StringLength( 25 )]
 		public string City { get; set; }
 
@@ -73,7 +76,5 @@ namespace Baby.Models
 		public virtual Organization Organization { get; set; }
 
 		public virtual Region Region { get; set; }
-			
-		public virtual ICollection<File> Images { get; set; }
 	}
 }

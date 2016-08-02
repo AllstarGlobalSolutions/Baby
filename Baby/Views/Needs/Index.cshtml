@@ -57,10 +57,7 @@
 				@Html.DisplayFor( modelItem => item.Caption )
 			</td>
 			<td>
-				@if ( item.Images.Any() )
-				{
-					<img src="/File?id=@item.Images.First().FileId" width="50" alt="image" />
-				}
+				<img src="/File?id=@item.FileId" width="50" alt="image" />
 			</td>
 			<td>
 				@Html.DisplayFor( modelItem => item.IsUrgent )

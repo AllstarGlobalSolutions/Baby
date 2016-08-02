@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Baby.Models.Advertisement>
+
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if ( ViewBag.Advertiser != null )
+{
+<h2>@( ViewBag.Advertiser as Advertiser ).Name</h2>
+
+<p>@Html.ActionLink( "Create New", "Create", new { advertiserId = ( ViewBag.Advertiser as Advertiser ).AdvertiserId } )</p>
+}
+<table class="table">
+	<tr>
+		<th>
+			@Html.DisplayNameFor( model => model.CampaignName )
+		</th>
+		<th>
+			Image
+		</th>
+		<th>
+			@Html.DisplayNameFor( model => model.ClickUrl )
+		</th>
+		<th>
+			@Html.DisplayNameFor( model => model.StartDate )
+		</th>
+		<th>
+			@Html.DisplayNameFor( model => model.EndDate )
+		</th>
+		<th></th>
+	</tr>
+
+	@foreach ( var item in Model )
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor( modelItem => item.CampaignName )
+			</td>
+			<td>
+				<img src="/File?id=@item.FileId" width="200" alt="image" />
+			</td>
+			<td>
+				<a href="@Html.DisplayFor( modelItem => item.ClickUrl )">@Html.DisplayFor( modelItem => item.ClickUrl )</a>
+			</td>
+			<td>
+				@Html.DisplayFor( modelItem => item.StartDate )
+			</td>
+			<td>
+				@Html.DisplayFor( modelItem => item.EndDate )
+			</td>
+			<td>
+				@Html.ActionLink( "Edit", "Edit", new { id = item.AdvertisementId } ) |
+				@Html.ActionLink( "Details", "Details", new { id = item.AdvertisementId } ) |
+				@Html.ActionLink( "Delete", "Delete", new { id = item.AdvertisementId } )
+			</td>
+		</tr>
+	}
+
+</table>

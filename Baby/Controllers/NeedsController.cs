@@ -32,7 +32,7 @@ namespace Baby.Controllers
 			{
 				return new HttpStatusCodeResult( HttpStatusCode.BadRequest );
 			}
-			Need need = db.Needs.Include( n => n.Images ).SingleOrDefault( n => n.NeedId == id );
+			Need need = db.Needs.Include( n => n.File ).SingleOrDefault( n => n.NeedId == id );
 			if ( need == null )
 			{
 				return HttpNotFound();
@@ -54,22 +54,22 @@ namespace Baby.Controllers
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Create( [Bind( Include = "NeedId,Caption,Story,IsUrgent,PublishDate,EndDate,HasNeedBeenMet,IsActive,AmountNeeded,AdditionalTags,OrganizationId,NeedTypeId,RegionId,CountryId,City" )] Need need, HttpPostedFileBase Image )
+		public ActionResult Create( [Bind( Include = "NeedId,Caption,Story,FileId,IsUrgent,PublishDate,EndDate,HasNeedBeenMet,IsActive,AmountNeeded,AdditionalTags,OrganizationId,NeedTypeId,RegionId,CountryId,City" )] Need need, HttpPostedFileBase Image )
 		{
 			try
 			{
 				if ( ModelState.IsValid )
 				{
-					need.NeedId = Guid.NewGuid();
-					db.Needs.Add( need );
+					Guid fileId = Guid.NewGuid();
 
 					if ( Image != null && Image.ContentLength > 0 )
 					{
 						Baby.Models.File file = new Baby.Models.File
 						{
-							FileId = Guid.NewGuid(),
+							FileId = fileId,
 							ContentType = Image.ContentType,
-							FileName = System.IO.Path.GetFileName( Image.FileName )
+							FileName = System.IO.Path.GetFileName( Image.FileName ),
+							FileType = FileType.NeedImage
 						};
 
 						using ( var reader = new System.IO.BinaryReader( Image.InputStream ) )
@@ -77,12 +77,16 @@ namespace Baby.Controllers
 							file.Content = reader.ReadBytes( Image.ContentLength );
 						}
 
-						need.Images.Add( file );
+						db.Files.Add( file );
 						db.SaveChanges();
-					}
 
-					db.SaveChanges();
-					return RedirectToAction( "Index" );
+						need.NeedId = Guid.NewGuid();
+						need.FileId = fileId;
+						db.Needs.Add( need );
+						db.SaveChanges();
+
+						return RedirectToAction( "Index" );
+					}
 				}
 			}
 			catch ( RetryLimitExceededException /*e*/)
@@ -104,12 +108,13 @@ namespace Baby.Controllers
 				return new HttpStatusCodeResult( HttpStatusCode.BadRequest );
 			}
 
-			Need need = db.Needs.Include( n => n.Images ).SingleOrDefault( n => n.NeedId == id );
+			Need need = db.Needs.Include( n => n.File ).SingleOrDefault( n => n.NeedId == id );
 
 			if ( need == null )
 			{
 				return HttpNotFound();
 			}
+
 			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name", need.CountryId );
 			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedTypeId );
 			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.RegionId );
@@ -127,31 +132,34 @@ namespace Baby.Controllers
 			{
 				if ( Image != null && Image.ContentLength > 0 )
 				{
-					if ( db.Files.Any( f => f.NeedId == need.NeedId ) )
+					Baby.Models.File file = db.Files.Find( need.FileId );
+					if ( file == null )
 					{
-						db.Files.Remove( db.Files.First( f => f.NeedId == need.NeedId ) );
+						file = new Baby.Models.File
+						{
+							FileId = Guid.NewGuid(),
+							FileName = System.IO.Path.GetFileName( Image.FileName ),
+							FileType = FileType.NeedImage,
+							ContentType = Image.ContentType
+						};
 					}
-					Baby.Models.File image = new Baby.Models.File
-					{
-						FileId = Guid.NewGuid(),
-						FileName = System.IO.Path.GetFileName( Image.FileName ),
-						ContentType = Image.ContentType,
-						NeedId = need.NeedId
-					};
 					using ( var reader = new System.IO.BinaryReader( Image.InputStream ) )
 					{
-						image.Content = reader.ReadBytes( Image.ContentLength );
+						file.Content = reader.ReadBytes( Image.ContentLength );
 					}
-					db.Files.Add( image );
-//					need.Images = new List<File> { image };
+					db.Files.Add( file );
+					db.SaveChanges();
+
+					need.FileId = file.FileId;
+
+					db.Entry( need ).State = EntityState.Modified;
+					db.SaveChanges();
+					return RedirectToAction( "Index" );
 				}
-				db.Entry( need ).State = EntityState.Modified;
-				db.SaveChanges();
-				return RedirectToAction( "Index" );
 			}
+
 			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name", need.CountryId );
 			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedTypeId );
-			ViewBag.OrganizationId = new SelectList( db.Organizations, "OrganizationId", "Name", need.OrganizationId );
 			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.RegionId );
 			return View( need );
 		}

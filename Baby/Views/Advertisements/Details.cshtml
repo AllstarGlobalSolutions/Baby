@@ -1,0 +1,58 @@
+﻿@model Baby.Models.Advertisement
+
+@{
+	ViewBag.Title = "Details";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+	<h4>Advertisement</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor( model => model.CampaignName )
+		</dt>
+
+		<dd>
+			@Html.DisplayFor( model => model.CampaignName )
+		</dd>
+
+		<dt>
+			Image
+		</dt>
+
+		<dd>
+			<img src="/File?id=@Model.FileId" width="200" alt="image" />
+		</dd>
+
+		<dt>
+			@Html.DisplayNameFor( model => model.ClickUrl )
+		</dt>
+
+		<dd>
+			<a href="@Html.DisplayFor( model => model.ClickUrl )">@Html.DisplayFor( model => model.ClickUrl )</a>
+		</dd>
+		<dt>
+			@Html.DisplayNameFor( model => model.StartDate )
+		</dt>
+
+		<dd>
+			@Html.DisplayFor( model => model.StartDate )
+		</dd>
+
+		<dt>
+			@Html.DisplayNameFor( model => model.EndDate )
+		</dt>
+
+		<dd>
+			@Html.DisplayFor( model => model.EndDate )
+		</dd>
+
+	</dl>
+</div>
+<p>
+	@Html.ActionLink( "Edit", "Edit", new { id = Model.AdvertisementId } ) |
+	@Html.ActionLink( "Back to List", "Index" )
+</p>

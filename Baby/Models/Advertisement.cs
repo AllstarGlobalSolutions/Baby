@@ -21,7 +21,14 @@ namespace Baby.Models
 		public Guid AdvertisementId { get; set; }
 
 		[Required]
-		public byte[] BannerImage { get; set; }
+		[StringLength( 30 )]
+		public string CampaignName { get; set; }
+
+		public Guid FileId { get; set; }
+		public File File { get; set; }
+
+		[Required]
+		public string ClickUrl { get; set; }
 
 		public DateTime StartDate { get; set; }
 
