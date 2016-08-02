@@ -4,49 +4,86 @@
    ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Home</h2>
 
 <p>
    @* @Html.ActionLink( "Create New", "Create" ) *@
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor( model => model.Name )
-        </th>
-        <th>
-            @Html.DisplayNameFor( model => model.OfficialOrganizationId )
-        </th>
-        <th>
-            @Html.DisplayNameFor( model => model.ApplicationSubmissionDate )
-        </th>
-        <th>
-            @Html.DisplayNameFor( model => model.Status )
-        </th>
-        <th></th>
-    </tr>
+<div class="col-md-8">
+	<h2>Organizations</h2>
+	<table class="table">
+		<tr>
+			<th>
+				@Html.DisplayNameFor( model => model.Name )
+			</th>
+			<th>
+				@Html.DisplayNameFor( model => model.OfficialOrganizationId )
+			</th>
+			<th>
+				@Html.DisplayNameFor( model => model.ApplicationSubmissionDate )
+			</th>
+			<th>
+				@Html.DisplayNameFor( model => model.Status )
+			</th>
+			<th></th>
+		</tr>
 
-    @foreach ( var item in Model )
-    {
-    <tr>
-        <td>
-            @Html.DisplayFor( modelItem => item.Name )
-        </td>
-        <td>
-            @Html.DisplayFor( modelItem => item.OfficialOrganizationId )
-        </td>
-        <td>
-            @Html.DisplayFor( modelItem => item.ApplicationSubmissionDate )
-        </td>
-        <td>
-            @Html.DisplayFor( modelItem => item.Status )
-        </td>
-        <td>
-            @Html.ActionLink( "Accept", "Accept", new { id = item.OrganizationId } ) |
-            @Html.ActionLink( "Reject", "Reject", new { id = item.OrganizationId } ) |
-            @Html.ActionLink( "Delete", "Delete", new { id = item.OrganizationId } )
-        </td>
-    </tr>
-    }
+		@foreach ( var item in Model )
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor( modelItem => item.Name )
+				</td>
+				<td>
+					@Html.DisplayFor( modelItem => item.OfficialOrganizationId )
+				</td>
+				<td>
+					@Html.DisplayFor( modelItem => item.ApplicationSubmissionDate )
+				</td>
+				<td>
+					@Html.DisplayFor( modelItem => item.Status )
+				</td>
+				<td>
+					@if ( item.Status == "Submitted" )
+					{
+						@Html.ActionLink( "Accept", "Accept", new { id = item.OrganizationId } )
+					}
+						|
+					@if ( item.Status == "Submitted" )
+					{
+						@Html.ActionLink( "Reject", "Reject", new { id = item.OrganizationId } )
+					}
+				</td>
+			</tr>
+		}
+	</table>
+</div>
 
-</table>
+<div class="col-md-1"></div>
+
+<div class="col-md-3">
+	<h2>Advertisers</h2>
+	<table class="table">
+		<tr>
+			<th>
+				@Html.DisplayNameFor( model => model.Name )
+			</th>
+			<th>
+				Campaigns
+			</th>
+		</tr>
+
+		@foreach ( var item in (List<Advertiser>)ViewBag.Advertisers )
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor( modelItem => item.Name )
+				</td>
+				<td>
+					@Html.ActionLink( linkText: "Advertisements", actionName: "Index", controllerName: "Advertisements", routeValues: new { advertiserId = item.AdvertiserId }, htmlAttributes: null )
+				</td>
+			</tr>
+		}
+
+	</table>
+</div>

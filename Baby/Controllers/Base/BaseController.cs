@@ -11,7 +11,7 @@ namespace Baby.Controllers.Base
 {
 	public class BaseController : Controller
 	{
-		protected Organization Organization;
+		protected Organization Organization = null;
 
 		protected override void OnActionExecuting( ActionExecutingContext filterContext )
 		{

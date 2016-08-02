@@ -17,7 +17,7 @@ namespace Baby.Controllers
 		// GET: Advertisers
 		public ActionResult Index()
 		{
-			return View( db.Advertisers.ToList() );
+			return View( db.Advertisers.Include( a => a.Addresses ).Include( a => a.Emails ).Include( a => a.Phones ).ToList() );
 		}
 
 		// GET: Advertisers/Details/5
@@ -27,11 +27,14 @@ namespace Baby.Controllers
 			{
 				return new HttpStatusCodeResult( HttpStatusCode.BadRequest );
 			}
+
 			Advertiser advertiser = db.Advertisers.Find( id );
+
 			if ( advertiser == null )
 			{
 				return HttpNotFound();
 			}
+
 			return View( advertiser );
 		}
 
@@ -62,6 +65,7 @@ namespace Baby.Controllers
 					Address = Request[ "Email" ],
 					AdvertiserId = advertiser.AdvertiserId
 				};
+				db.Emails.Add( email );
 				db.SaveChanges();
 
 				var phone = new Phone
@@ -71,6 +75,7 @@ namespace Baby.Controllers
 					Number = Request[ "Phone" ],
 					AdvertiserId = advertiser.AdvertiserId
 				};
+				db.Phones.Add( phone );
 				db.SaveChanges();
 
 				var address = new Address
@@ -86,6 +91,7 @@ namespace Baby.Controllers
 					CountryId = Guid.Parse( Request[ "CountryId" ] ),
 					AdvertiserId = advertiser.AdvertiserId
 				};
+				db.Addresses.Add( address );
 				db.SaveChanges();
 
 				return RedirectToAction( "Index" );
@@ -102,11 +108,12 @@ namespace Baby.Controllers
 			{
 				return new HttpStatusCodeResult( HttpStatusCode.BadRequest );
 			}
-			Advertiser advertiser = db.Advertisers.Find( id );
+			Advertiser advertiser = db.Advertisers.Include( a => a.Addresses ).Include( a => a.Emails ).Include( a => a.Phones ).SingleOrDefault( a => a.AdvertiserId == id );
 			if ( advertiser == null )
 			{
 				return HttpNotFound();
 			}
+
 			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name" );
 			return View( advertiser );
 		}

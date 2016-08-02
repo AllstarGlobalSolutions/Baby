@@ -7,7 +7,7 @@
 
 @if ( ViewBag.Advertiser != null )
 {
-<h2>@( ViewBag.Advertiser as Advertiser ).Name</h2>
+<h2>@ViewBag.Advertiser.Name</h2>
 
 <p>@Html.ActionLink( "Create New", "Create", new { advertiserId = ( ViewBag.Advertiser as Advertiser ).AdvertiserId } )</p>
 }
@@ -41,7 +41,7 @@
 				<img src="/File?id=@item.FileId" width="200" alt="image" />
 			</td>
 			<td>
-				<a href="@Html.DisplayFor( modelItem => item.ClickUrl )">@Html.DisplayFor( modelItem => item.ClickUrl )</a>
+				<a target="_blank" href="@Html.DisplayFor( modelItem => item.ClickUrl )">@Html.DisplayFor( modelItem => item.ClickUrl )</a>
 			</td>
 			<td>
 				@Html.DisplayFor( modelItem => item.StartDate )

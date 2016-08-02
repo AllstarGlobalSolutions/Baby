@@ -8,11 +8,11 @@
 <h2>Create</h2>
 
 
-@using ( Html.BeginForm() )
+@using ( Html.BeginForm( "Create", "Advertisements", FormMethod.Post, new { enctype = "multipart/form-data" } ) )
 {
 	@Html.AntiForgeryToken()
 	@Html.HiddenFor( model => model.AdvertiserId )
-	@Html.HiddenFor( model => model.FileId );
+	@Html.HiddenFor( model => model.FileId, new { value = "" } );
 
 	<div class="form-horizontal">
 		<h4>Advertisement</h4>
@@ -30,6 +30,14 @@
 			@Html.Label( "Image", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
 				<input type="file" name="Image" id="Image" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor( model => model.ClickUrl, htmlAttributes: new { @class = "control-label col-md-2" } )
+			<div class="col-md-10">
+				@Html.EditorFor( model => model.ClickUrl, new { htmlAttributes = new { @class = "form-control" } } )
+				@Html.ValidationMessageFor( model => model.ClickUrl, "", new { @class = "text-danger" } )
 			</div>
 		</div>
 

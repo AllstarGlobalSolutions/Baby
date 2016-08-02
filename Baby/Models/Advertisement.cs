@@ -24,15 +24,15 @@ namespace Baby.Models
 		[StringLength( 30 )]
 		public string CampaignName { get; set; }
 
-		public Guid FileId { get; set; }
+		public Guid? FileId { get; set; }
 		public File File { get; set; }
 
 		[Required]
 		public string ClickUrl { get; set; }
 
-		public DateTime StartDate { get; set; }
+		public DateTime? StartDate { get; set; }
 
-		public DateTime EndDate { get; set; }
+		public DateTime? EndDate { get; set; }
 
 		public Guid AdvertiserId { get; set; }
 

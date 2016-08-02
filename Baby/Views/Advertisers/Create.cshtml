@@ -27,56 +27,57 @@
 		<div class="form-group">
 			@Html.Label( "Email Address", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
-				@Html.TextBox( "Email", new { @class = "form-control" } )
+				@Html.TextBox( "Email", "", new { @class = "form-control" } )
 			</div>
 		</div>
 
 		<div class="form-group">
 			@Html.Label( "Phone Number", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
-				@Html.TextBox( "Phone", new { @class = "form-control" } )
+				@Html.TextBox( "Phone", "", new { @class = "form-control" } )
 			</div>
 		</div>
 
 		<div class="form-group">
-			@Html.Label( "Street Address", htmlAttributes: new { @class = "control-label col-md-2" } )
+			@Html.Label( "Street Address", "", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
-				@Html.TextBox( "StreetAddress1", new { @class = "form-control" } )
+				@Html.TextBox( "StreetAddress1", "", new { @class = "form-control" } )
 			</div>
 		</div>
 
 		<div class="form-group">
-			@Html.Label( "Street Address", htmlAttributes: new { @class = "control-label col-md-2" } )
+		@*	@Html.Label( "Street Address", htmlAttributes: new { @class = "control-label col-md-2" } ) *@
+			<div class="col-md-2"></div>
 			<div class="col-md-10">
-				@Html.TextBox( "StreetAddress2", new { @class = "form-control" } )
+				@Html.TextBox( "StreetAddress2", "", new { @class = "form-control" } )
 			</div>
 		</div>
 
 		<div class="form-group">
 			@Html.Label( "District", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
-				@Html.TextBox( "District", new { @class = "form-control" } )
+				@Html.TextBox( "District", "", new { @class = "form-control" } )
 			</div>
 		</div>
 
 		<div class="form-group">
 			@Html.Label( "City", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
-				@Html.TextBox( "City", new { @class = "form-control" } )
+				@Html.TextBox( "City", "", new { @class = "form-control" } )
 			</div>
 		</div>
 
 		<div class="form-group">
 			@Html.Label( "State Or Province", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
-				@Html.TextBox( "StateOrProvince", new { @class = "form-control" } )
+				@Html.TextBox( "StateOrProvince", "", new { @class = "form-control" } )
 			</div>
 		</div>
 
 		<div class="form-group">
 			@Html.Label( "Postal Code", htmlAttributes: new { @class = "control-label col-md-2" } )
 			<div class="col-md-10">
-				@Html.TextBox( "PostalCode", new { @class = "form-control" } )
+				@Html.TextBox( "PostalCode", "", new { @class = "form-control" } )
 			</div>
 		</div>
 

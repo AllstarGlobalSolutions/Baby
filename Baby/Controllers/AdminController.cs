@@ -19,6 +19,7 @@ namespace Baby.Controllers
 		// GET: Admin
 		public ActionResult Index()
 		{
+			ViewBag.Advertisers = db.Advertisers.ToList();
 			var organizations = db.Organizations;//.Include( o => o.ProcessedBy );
 			return View( organizations.ToList() );
 		}
@@ -26,7 +27,8 @@ namespace Baby.Controllers
 		// GET: Admin/Accept/5
 		public ActionResult Accept( Guid id )
 		{
-			return View();
+			Organization org = db.Organizations.Find( id );
+			return View( org );
 		}
 
 		// POST: Admin/Accpt/5
@@ -39,6 +41,7 @@ namespace Baby.Controllers
 			{
 				org.ApplicationApproveRejectDate = DateTime.Now;
 				org.Status = "Application Accepted";
+				db.SaveChanges();
 				SendApplicationAcceptedEmail();
 				return RedirectToAction( "Index" );
 			}
@@ -53,13 +56,25 @@ namespace Baby.Controllers
 		// GET: Admin/Reject/5
 		public ActionResult Reject( Guid id )
 		{
-			return View();
+			Organization org = db.Organizations.Find( id );
+			return View( org );
 		}
 
 		// POST: Admin/Reject/5
 		[HttpPost]
 		public ActionResult Reject( Guid id, FormCollection collection )
 		{
+			Organization org = db.Organizations.FirstOrDefault( o => o.OrganizationId == id );
+
+			if ( org != null )
+			{
+				org.ApplicationApproveRejectDate = DateTime.Now;
+				org.Status = "Application Rejected";
+				org.RejectionReason = collection[ "RejectionReason" ];
+				db.SaveChanges();
+				SendApplicationRejectedEmail();
+				return RedirectToAction( "Index" );
+			}
 			return View();
 		}
 

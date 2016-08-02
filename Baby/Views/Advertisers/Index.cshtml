@@ -16,7 +16,13 @@
 			@Html.DisplayNameFor( model => model.Name )
 		</th>
 		<th>
-			
+			Email
+		</th>
+		<th>
+			Phone
+		</th>
+		<th>
+			Campaigns
 		</th>
 		<th></th>
 	</tr>
@@ -28,7 +34,13 @@
 				@Html.DisplayFor( modelItem => item.Name )
 			</td>
 			<td>
-				@Html.ActionLink( "Advertisements", "Index", "Advertisements", new { advertiserId = item.AdvertiserId } )
+				@item.Emails.Single().Address
+			</td>
+			<td>
+				@item.Phones.Single().Number
+			</td>
+			<td>
+				@Html.ActionLink( linkText: "Advertisements", actionName: "Index", controllerName: "Advertisements", routeValues: new { advertiserId = item.AdvertiserId }, htmlAttributes: null )
 			</td>
 			<td>
 				@Html.ActionLink( "Edit", "Edit", new { id = item.AdvertiserId } ) |

@@ -134,7 +134,9 @@ namespace Baby.Controllers
 					db.Phones.Add( phone );
 					db.SaveChanges();
 
-					return RedirectToAction( "ApplicationSubmitted" );
+					SendApplicationEmail( orgGuid );
+
+					return RedirectToAction( "ApplicationSubmitted", new { orgid = orgGuid } );
 				}
 				catch ( Exception /*e*/ )
 				{
@@ -157,10 +159,16 @@ namespace Baby.Controllers
 
 		}
 
+		public void SendApplicationEmail( Guid orgId )
+		{
+			//TODO: Send email to us to let us know an organization has applied
+		}
+
 		// GET: /Account/ApplicationSubmitted
 		[AllowAnonymous]
-		public ActionResult ApplicationSubmitted()
+		public ActionResult ApplicationSubmitted( Guid orgid )
 		{
+			ViewBag.OrganizationId = orgid;
 			return View();
 		}
 
