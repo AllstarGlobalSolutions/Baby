@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -10,9 +8,12 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Baby.Models;
 using Baby.Models.ViewModels;
-using System.Data.Entity.Core;
-using System.Data.SqlClient;
 using Baby.Controllers.Base;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Data.Entity;
+using Newtonsoft.Json;
 
 namespace Baby.Controllers
 {
@@ -22,9 +23,15 @@ namespace Baby.Controllers
 		private ApplicationDbContext db = new ApplicationDbContext();
 		private ApplicationSignInManager _signInManager;
 		private ApplicationUserManager _userManager;
+		HttpClient client;
+		string url = "http://localhost:58637/";
 
 		public AccountController()
 		{
+			client = new HttpClient();
+			client.BaseAddress = new Uri( url );
+			client.DefaultRequestHeaders.Accept.Clear();
+			client.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
 		}
 
 		public AccountController( ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -63,7 +70,7 @@ namespace Baby.Controllers
 			//			var addresses = db.Addresses.Include( a => a.Advertiser ).Include( a => a.Country ).Include( a => a.Organization ).Include( a => a.User );
 			//			return View( addresses.ToList() );
 			var user = UserManager.FindById( User.Identity.GetUserId() );
-			var users = db.Users.Where( u => u.OrganizationId == user.OrganizationId );
+			var users = db.Users.Where( u => u.Organization == user.Organization );
 			return View( users.ToList() );
 		}
 
@@ -95,45 +102,38 @@ namespace Baby.Controllers
 						ApplicationSubmissionDate = DateTime.Now,
 					};
 
-					db.Organizations.Add( org );
-					db.SaveChanges();
-
-					var email = new Email
+					org.Emails.Add( new Email
 					{
 						EmailId = Guid.NewGuid(),
 						Type = "Work",
 						Address = model.Email,
-						OrganizationId = orgGuid
-					};
-					db.Emails.Add( email );
-					db.SaveChanges();
+						Organization = org
+					} );
 
-					var address = new Address
+					org.Addresses.Add( new Address
 					{
 						AddressId = Guid.NewGuid(),
 						Type = "Mailing",
-						Street1 = model.StreetAddress1,
-						Street2 = model.StreetAddress2,
-						District = model.District,
+						Street = model.StreetAddress,
 						City = model.City,
 						StateOrProvince = model.StateOrProvince,
-						CountryId = model.CountryId,
+						Country = db.Countries.Find( model.CountryId ),
 						PostalCode = model.PostalCode,
-						OrganizationId = orgGuid
-					};
-					db.Addresses.Add( address );
-					db.SaveChanges();
+						Organization = org
+					} );
 
-					var phone = new Phone
+					org.Phones.Add( new Phone
 					{
 						PhoneId = Guid.NewGuid(),
 						Type = "Work",
+						CountryCode = model.CountryCode,
 						Number = model.PhoneNumber,
-						OrganizationId = orgGuid
-					};
-					db.Phones.Add( phone );
-					db.SaveChanges();
+						Organization = org
+					} );
 
+					db.Organizations.Add( org );
+
+					db.SaveChanges();
 					SendApplicationEmail( orgGuid );
 
 					return RedirectToAction( "ApplicationSubmitted", new { orgid = orgGuid } );
@@ -181,6 +181,18 @@ namespace Baby.Controllers
 			return View();
 		}
 
+		class LoginResponse
+		{
+			public string access_token { get; set; }
+			public string token_type { get; set; }
+			public int expires_in { get; set; }
+			public string userName { get; set; }
+			[JsonProperty( ".issued" )]
+			public string IssuedDttm { get; set; }
+			[JsonProperty( ".expires" )]
+			public string ExpiresOnDttm { get; set; }
+		}
+
 		//
 		// POST: /Account/Login
 		[HttpPost]
@@ -193,6 +205,36 @@ namespace Baby.Controllers
 				return View( model );
 			}
 
+			string loginString = "grant_type=password&username=" + model.UserName + "&password=" + model.Password;
+			HttpContent content = new StringContent( loginString, Encoding.UTF8, "application/x-www-form-urlencoded" );
+			HttpResponseMessage response = await client.PostAsync( url + "Token", content );
+
+			if ( response.IsSuccessStatusCode )
+			{
+				var data = JsonConvert.DeserializeObject<LoginResponse>( await response.Content.ReadAsStringAsync() );
+				Session[ "AccessToken" ] = data.access_token;
+
+				var user = db.Users.First( u => u.UserName == model.UserName );
+				await SignInManager.SignInAsync( user, false, false );
+
+				if ( user != null && user.Type == UserType.Admin )
+				{
+					return RedirectToAction( "Index", "Admin" );
+				}
+				else
+				{
+					return RedirectToLocal( returnUrl );
+				}
+			}
+			else
+			{
+				var data = await response.Content.ReadAsStringAsync();
+				ModelState.AddModelError( "ReasonPhrase", response.ReasonPhrase );
+				ModelState.AddModelError( "response", data );
+				return View( model );
+			}
+			/*
+			
 			// This doesn't count login failures towards account lockout
 			// To enable password failures to trigger account lockout, change to shouldLockout: true
 			var result = await SignInManager.PasswordSignInAsync( model.UserName, model.Password, model.RememberMe, shouldLockout: false );
@@ -200,7 +242,7 @@ namespace Baby.Controllers
 			{
 				case SignInStatus.Success:
 					ApplicationUser user = db.Users.FirstOrDefault( u => u.UserName == model.UserName );
-					if ( user.OrganizationId == null )
+					if ( user.Organization == null )
 					{
 						return RedirectToAction( "Index", "Admin" );
 					}
@@ -214,6 +256,7 @@ namespace Baby.Controllers
 					ModelState.AddModelError( "", "Invalid login attempt." );
 					return View( model );
 			}
+			*/
 		}
 
 		//
@@ -264,7 +307,7 @@ namespace Baby.Controllers
 		[AllowAnonymous]
 		public ActionResult Register( Guid orgid )
 		{
-			ApplicationUser user = db.Users.FirstOrDefault( u => u.OrganizationId == orgid );
+			ApplicationUser user = db.Users.FirstOrDefault( u => u.Organization.OrganizationId == orgid );
 
 			// if this is the first time this link has been accessed for the organization (in other words, they do not have a user set up yet)
 			if ( user == default( ApplicationUser ) )
@@ -287,15 +330,23 @@ namespace Baby.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Register( RegisterViewModel model )
 		{
+			//TODO: worked but still crashed...not sure where
 			if ( ModelState.IsValid )
 			{
+				Organization org = db.Organizations.Find( model.OrganizationId );
+
+				if ( org == null )
+				{
+					ModelState.AddModelError( "OrgNotFound", "Organization Not Found" );
+				}
+
 				var user = new ApplicationUser
 				{
 					UserName = model.UserName,
 					Email = model.Email,
 					Surname = model.Surname,
 					GivenNames = model.GivenNames,
-					OrganizationId = model.OrganizationId
+					Type = UserType.Organization
 				};
 
 				var result = await UserManager.CreateAsync( user, model.Password );
@@ -304,24 +355,25 @@ namespace Baby.Controllers
 				{
 					try
 					{
-						var Email = new Email
+						org.Users.Add( user );
+						db.Entry<Organization>( org ).State = EntityState.Modified;
+
+						user.Emails.Add( new Email
 						{
 							EmailId = Guid.NewGuid(),
 							Address = model.Email,
 							Type = "Work",
-							UserId = user.Id
-						};
-						db.Emails.Add( Email );
+						} );
 
-						var Phone = new Phone
+						user.Phones.Add( new Phone
 						{
 							PhoneId = Guid.NewGuid(),
 							Number = model.Phone,
+							CountryCode = org.Phones.First().CountryCode,
 							Type = "Work",
-							UserId = user.Id
-						};
-						db.Phones.Add( Phone );
+						} );
 
+						db.Entry<ApplicationUser>( user ).State = EntityState.Modified;
 						db.SaveChanges();
 					}
 					catch ( Exception /*e*/ )
@@ -363,7 +415,7 @@ namespace Baby.Controllers
 		{
 			if ( ModelState.IsValid )
 			{
-				Guid? orgid = UserManager.FindById( User.Identity.GetUserId() ).OrganizationId;
+				Organization org = UserManager.FindById( User.Identity.GetUserId() ).Organization;
 
 				var user = new ApplicationUser
 				{
@@ -371,7 +423,7 @@ namespace Baby.Controllers
 					Email = model.Email,
 					Surname = model.Surname,
 					GivenNames = model.GivenNames,
-					OrganizationId = orgid
+					Organization = org
 				};
 
 				var result = await UserManager.CreateAsync( user, model.Password );
@@ -380,6 +432,7 @@ namespace Baby.Controllers
 				{
 					try
 					{
+						/*
 						var Email = new Email
 						{
 							EmailId = Guid.NewGuid(),
@@ -398,7 +451,7 @@ namespace Baby.Controllers
 						};
 						db.Phones.Add( Phone );
 
-						db.SaveChanges();
+						db.SaveChanges(); */
 					}
 					catch ( Exception /*e*/ )
 					{

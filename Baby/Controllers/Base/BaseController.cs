@@ -20,7 +20,7 @@ namespace Baby.Controllers.Base
 			if ( Request != null && Request.IsAuthenticated )
 			{
 				ApplicationUserManager um = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-				this.Organization = um.FindById( User.Identity.GetUserId() ).Organization; ;
+				this.Organization = um.FindById( User.Identity.GetUserId() ).Organization;
 				ViewBag.Organization = this.Organization;
 			}
 		}

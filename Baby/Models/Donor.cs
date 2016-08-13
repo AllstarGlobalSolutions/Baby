@@ -50,7 +50,7 @@ namespace Baby.Models
 
 		public DateTime DateOfBirth { get; set; }
 
-		public Gender Gender { get; set; }
+		public string Gender { get; set; }
 
 		[StringLength( 30 )]
 		public string Occupation { get; set; }

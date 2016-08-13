@@ -18,8 +18,9 @@ namespace Baby.Controllers
 		// GET: Donations
 		public ActionResult Index()
 		{
-			var donations = db.Donations.Include( d => d.Currency ).Include( d => d.Donor ).Include( d => d.Need ).Include( d => d.Organization );
-			return View( donations.ToList() );
+			// db.Donations.Include( d => d.Currency ).Include( d => d.User ).Include( d => d.Need ).Include( d => d.Organiation );
+			//return View( donations.ToList() );
+			return View();
 		}
 
 		// GET: Donations/Details/5

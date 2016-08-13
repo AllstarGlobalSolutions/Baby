@@ -10,7 +10,7 @@
 	{
 		protected override void Seed( ApplicationDbContext context )
 		{
-			AddAdminUser( context );
+			AddUsers( context );
 			ReadAndInsertCountries( context );
 
 			base.Seed( context );
@@ -40,11 +40,13 @@
 			} // using ( Stream stream = this.GetType().Assembly.GetManifestResourceStream( "Baby.ViewResources.countries.csv" ) )
 		}
 
-		protected void AddAdminUser( ApplicationDbContext context )
+		protected void AddUsers( ApplicationDbContext context )
 		{
 			var userStore = new UserStore<ApplicationUser>( context );
 			var userManager = new UserManager<ApplicationUser>( userStore );
 			var userToInsert = new ApplicationUser { UserName = "admin", Surname = "Admin" };
+			userManager.Create( userToInsert, "Password@123" );
+			userToInsert = new ApplicationUser { UserName = "donor", Surname = "Donor" };
 			userManager.Create( userToInsert, "Password@123" );
 		}
 	}

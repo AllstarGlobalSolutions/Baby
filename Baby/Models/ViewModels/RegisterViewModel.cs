@@ -7,7 +7,7 @@ namespace Baby.Models.ViewModels
 {
 	public class RegisterViewModel
 	{
-		public Guid? OrganizationId { get; set; }
+		public Guid OrganizationId { get; set; }
 
 		[Required]
 		[Display( Name = "Surname" )]

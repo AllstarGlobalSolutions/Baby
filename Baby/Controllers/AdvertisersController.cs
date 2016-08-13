@@ -41,7 +41,7 @@ namespace Baby.Controllers
 		// GET: Advertisers/Create
 		public ActionResult Create()
 		{
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name" );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			return View();
 		}
 
@@ -56,48 +56,38 @@ namespace Baby.Controllers
 			{
 				advertiser.AdvertiserId = Guid.NewGuid();
 				db.Advertisers.Add( advertiser );
-				db.SaveChanges();
 
-				var email = new Email
+				advertiser.Emails.Add( new Email
 				{
 					EmailId = Guid.NewGuid(),
 					Type = "Work",
 					Address = Request[ "Email" ],
-					AdvertiserId = advertiser.AdvertiserId
-				};
-				db.Emails.Add( email );
-				db.SaveChanges();
+				} );
 
-				var phone = new Phone
+				advertiser.Phones.Add( new Phone
 				{
 					PhoneId = Guid.NewGuid(),
 					Type = "Work",
+					CountryCode = Request[ "CountryCode" ],
 					Number = Request[ "Phone" ],
-					AdvertiserId = advertiser.AdvertiserId
-				};
-				db.Phones.Add( phone );
-				db.SaveChanges();
+				} );
 
-				var address = new Address
+				advertiser.Addresses.Add( new Address
 				{
 					AddressId = Guid.NewGuid(),
 					Type = "Mailing",
-					Street1 = Request[ "StreetAddress1" ],
-					Street2 = Request[ "StreetAddress2" ],
-					District = Request[ "District" ],
+					Street = Request[ "StreetAddress" ],
 					City = Request[ "City" ],
 					StateOrProvince = Request[ "StateOrProvince" ],
 					PostalCode = Request[ "PostalCode" ],
-					CountryId = Guid.Parse( Request[ "CountryId" ] ),
-					AdvertiserId = advertiser.AdvertiserId
-				};
-				db.Addresses.Add( address );
-				db.SaveChanges();
+					Country = db.Countries.Find( Guid.Parse( Request[ "CountryId" ] ) ),
+				} );
 
+				db.SaveChanges();
 				return RedirectToAction( "Index" );
 			}
 
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name" );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			return View( advertiser );
 		}
 
@@ -108,13 +98,13 @@ namespace Baby.Controllers
 			{
 				return new HttpStatusCodeResult( HttpStatusCode.BadRequest );
 			}
-			Advertiser advertiser = db.Advertisers.Include( a => a.Addresses ).Include( a => a.Emails ).Include( a => a.Phones ).SingleOrDefault( a => a.AdvertiserId == id );
+			Advertiser advertiser = db.Advertisers.FirstOrDefault();//.Include( a => a.Addresses ).Include( a => a.Emails ).Include( a => a.Phones ).SingleOrDefault( a => a.AdvertiserId == id );
 			if ( advertiser == null )
 			{
 				return HttpNotFound();
 			}
 
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name" );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			return View( advertiser );
 		}
 
@@ -131,7 +121,7 @@ namespace Baby.Controllers
 				db.SaveChanges();
 				return RedirectToAction( "Index" );
 			}
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name" );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			return View( advertiser );
 		}
 
@@ -164,7 +154,7 @@ namespace Baby.Controllers
 		// GET: Advertisers/Advertisemetns/5
 		public ActionResult Advertisements( Guid advertiserId )
 		{
-			return View( db.Advertisements.Where( a => a.AdvertiserId == advertiserId ).ToList() );
+			return View( db.Advertisements.Where( a => a.Advertiser.AdvertiserId == advertiserId ).ToList() );
 		}
 
 		protected override void Dispose( bool disposing )

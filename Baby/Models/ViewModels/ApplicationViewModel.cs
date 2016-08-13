@@ -18,18 +18,15 @@ namespace Baby.Models.ViewModels
 		[Display( Name = "Email" )]
 		public string Email { get; set; }
 
+		[Display( Name = "Country Code" )]
+		public string CountryCode { get; set; }
+
 		[Required]
 		[Display( Name = "Phone Number" )]
 		public string PhoneNumber { get; set; }
 
 		[Display( Name = "Street Address" )]
-		public string StreetAddress1 { get; set; }
-
-		[Display( Name = " " )]
-		public string StreetAddress2 { get; set; }
-
-		[Display( Name = "District" )]
-		public string District { get; set; }
+		public string StreetAddress { get; set; }
 
 		[Required]
 		[Display( Name = "City" )]

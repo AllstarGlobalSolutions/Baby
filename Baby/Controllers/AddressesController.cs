@@ -41,7 +41,7 @@ namespace Baby.Controllers
 		public ActionResult Create()
 		{
 			ViewBag.AdvertiserId = new SelectList( db.Advertisers, "AdvertiserId", "Name" );
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Code" );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Code" );
 			ViewBag.OrganizationId = new SelectList( db.Organizations, "OrganizationId", "Name" );
 			ViewBag.UserId = new SelectList( db.Users, "Id", "Surname" );
 			return View();
@@ -63,7 +63,7 @@ namespace Baby.Controllers
 			}
 
 			ViewBag.AdvertiserId = new SelectList( db.Advertisers, "AdvertiserId", "Name", address.AdvertiserId );
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Code", address.CountryId );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Code", address.CountryId );
 			ViewBag.OrganizationId = new SelectList( db.Organizations, "OrganizationId", "Name", address.OrganizationId );
 			ViewBag.UserId = new SelectList( db.Users, "Id", "Surname", address.UserId );
 			return View( address );
@@ -82,7 +82,7 @@ namespace Baby.Controllers
 				return HttpNotFound();
 			}
 			ViewBag.AdvertiserId = new SelectList( db.Advertisers, "AdvertiserId", "Name", address.AdvertiserId );
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Code", address.CountryId );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Code", address.CountryId );
 			ViewBag.OrganizationId = new SelectList( db.Organizations, "OrganizationId", "Name", address.OrganizationId );
 			ViewBag.UserId = new SelectList( db.Users, "Id", "Surname", address.UserId );
 			return View( address );
@@ -102,7 +102,7 @@ namespace Baby.Controllers
 				return RedirectToAction( "Index" );
 			}
 			ViewBag.AdvertiserId = new SelectList( db.Advertisers, "AdvertiserId", "Name", address.AdvertiserId );
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Code", address.CountryId );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Code", address.CountryId );
 			ViewBag.OrganizationId = new SelectList( db.Organizations, "OrganizationId", "Name", address.OrganizationId );
 			ViewBag.UserId = new SelectList( db.Users, "Id", "Surname", address.UserId );
 			return View( address );

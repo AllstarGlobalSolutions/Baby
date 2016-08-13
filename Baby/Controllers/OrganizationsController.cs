@@ -17,7 +17,7 @@ namespace Baby.Controllers
 		// GET: Organizations
 		public ActionResult Index()
 		{
-			var organizations = db.Organizations;//.Include( o => o.ProcessedBy );
+			var organizations = db.Organizations.OrderBy( o => o.Name );//.Include( o => o.ProcessedBy );
 			return View( organizations.ToList() );
 		}
 

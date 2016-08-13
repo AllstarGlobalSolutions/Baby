@@ -40,7 +40,7 @@ namespace Baby.Controllers
 			if ( org != null )
 			{
 				org.ApplicationApproveRejectDate = DateTime.Now;
-				org.Status = "Application Accepted";
+				org.Status = "Accepted";
 				db.SaveChanges();
 				SendApplicationAcceptedEmail();
 				return RedirectToAction( "Index" );
@@ -69,7 +69,7 @@ namespace Baby.Controllers
 			if ( org != null )
 			{
 				org.ApplicationApproveRejectDate = DateTime.Now;
-				org.Status = "Application Rejected";
+				org.Status = "Rejected";
 				org.RejectionReason = collection[ "RejectionReason" ];
 				db.SaveChanges();
 				SendApplicationRejectedEmail();

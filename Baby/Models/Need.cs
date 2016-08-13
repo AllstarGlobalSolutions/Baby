@@ -4,8 +4,6 @@ namespace Baby.Models
 	using System.Collections.Generic;
 	using System.ComponentModel.DataAnnotations;
 	using System.ComponentModel.DataAnnotations.Schema;
-	using System.Data.Entity.Spatial;
-	using System.Web;
 
 	[Table( "Need" )]
 	public partial class Need
@@ -53,7 +51,7 @@ namespace Baby.Models
 
 		public Guid? CountryId { get; set; }
 
-		public Guid FileId { get; set; }
+		public Guid? FileId { get; set; }
 
 		public File File { get; set; }
 

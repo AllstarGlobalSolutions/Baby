@@ -43,7 +43,7 @@ namespace Baby.Controllers
 		// GET: Needs/Create
 		public ActionResult Create()
 		{
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name" );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description" );
 			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name" );
 			return View();
@@ -81,7 +81,7 @@ namespace Baby.Controllers
 						db.SaveChanges();
 
 						need.NeedId = Guid.NewGuid();
-						need.FileId = fileId;
+						need.File.FileId = fileId;
 						db.Needs.Add( need );
 						db.SaveChanges();
 
@@ -94,9 +94,9 @@ namespace Baby.Controllers
 				ModelState.AddModelError( "", "Unable to Save Changes." );
 			}
 
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name", need.CountryId );
-			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedTypeId );
-			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.RegionId );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name", need.Country.CountryId );
+			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedType.NeedTypeId );
+			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.Region.RegionId );
 			return View( need );
 		}
 
@@ -115,9 +115,9 @@ namespace Baby.Controllers
 				return HttpNotFound();
 			}
 
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name", need.CountryId );
-			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedTypeId );
-			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.RegionId );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name", need.Country.CountryId );
+			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedType.NeedTypeId );
+			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.Region.RegionId );
 			return View( need );
 		}
 
@@ -132,7 +132,7 @@ namespace Baby.Controllers
 			{
 				if ( Image != null && Image.ContentLength > 0 )
 				{
-					Baby.Models.File file = db.Files.Find( need.FileId );
+					Baby.Models.File file = db.Files.Find( need.File.FileId );
 					if ( file == null )
 					{
 						file = new Baby.Models.File
@@ -150,7 +150,7 @@ namespace Baby.Controllers
 					db.Files.Add( file );
 					db.SaveChanges();
 
-					need.FileId = file.FileId;
+					need.File.FileId = file.FileId;
 
 					db.Entry( need ).State = EntityState.Modified;
 					db.SaveChanges();
@@ -158,9 +158,9 @@ namespace Baby.Controllers
 				}
 			}
 
-			ViewBag.CountryId = new SelectList( db.Countries, "CountryId", "Name", need.CountryId );
-			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedTypeId );
-			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.RegionId );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name", need.Country.CountryId );
+			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedType.NeedTypeId );
+			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.Region.RegionId );
 			return View( need );
 		}
 

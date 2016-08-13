@@ -22,7 +22,7 @@ namespace Baby.Controllers
 			if ( advertiserId.HasValue )
 			{
 				ViewBag.Advertiser = db.Advertisers.Find( advertiserId );
-				advertisements = db.Advertisements.Include( a => a.Advertiser ).Include( a => a.File ).Where( a => a.AdvertiserId == advertiserId );
+				advertisements = db.Advertisements.Include( a => a.Advertiser ).Include( a => a.File ).Where( a => a.Advertiser.AdvertiserId == advertiserId );
 			}
 			else
 			{
@@ -88,15 +88,15 @@ namespace Baby.Controllers
 					db.SaveChanges();
 
 					advertisement.AdvertisementId = Guid.NewGuid();
-					advertisement.FileId = fileId;
+					advertisement.File.FileId = fileId;
 					db.Advertisements.Add( advertisement );
 					db.SaveChanges();
 					return RedirectToAction( "Index" );
 				}
 			}
 
-			ViewBag.Advertiser = db.Advertisers.Find( advertisement.AdvertiserId );
-			ViewBag.AdvertiserId = advertisement.AdvertiserId;
+			ViewBag.Advertiser = db.Advertisers.Find( advertisement.Advertiser.AdvertiserId );
+			ViewBag.AdvertiserId = advertisement.Advertiser.AdvertiserId;
 			return View( advertisement );
 		}
 
@@ -115,8 +115,8 @@ namespace Baby.Controllers
 				return HttpNotFound();
 			}
 
-			ViewBag.Advertiser = db.Advertisers.Find( advertisement.AdvertiserId );
-			ViewBag.AdvertiserId = advertisement.AdvertiserId;
+			ViewBag.Advertiser = db.Advertisers.Find( advertisement.Advertiser.AdvertiserId );
+			ViewBag.AdvertiserId = advertisement.Advertiser.AdvertiserId;
 			return View( advertisement );
 		}
 
@@ -131,7 +131,7 @@ namespace Baby.Controllers
 			{
 				if ( Image != null && Image.ContentLength > 0 )
 				{
-					Baby.Models.File file = db.Files.Find( advertisement.FileId );
+					Baby.Models.File file = db.Files.Find( advertisement.File.FileId );
 					if ( file == null )
 					{
 						file = new Baby.Models.File
@@ -149,7 +149,7 @@ namespace Baby.Controllers
 					db.Files.Add( file );
 					db.SaveChanges();
 
-					advertisement.FileId = file.FileId;
+					advertisement.File.FileId = file.FileId;
 
 					db.Entry( advertisement ).State = EntityState.Modified;
 					db.SaveChanges();
@@ -157,8 +157,8 @@ namespace Baby.Controllers
 				}
 			}
 
-			ViewBag.Advertiser = db.Advertisers.Find( advertisement.AdvertiserId );
-			ViewBag.AdvertiserId = advertisement.AdvertiserId;
+			ViewBag.Advertiser = db.Advertisers.Find( advertisement.Advertiser.AdvertiserId );
+			ViewBag.AdvertiserId = advertisement.Advertiser.AdvertiserId;
 			return View( advertisement );
 		}
 

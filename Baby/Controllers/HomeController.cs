@@ -25,7 +25,7 @@ namespace Baby.Controllers
 			if ( User.Identity.IsAuthenticated )
 			{
 				var user = UserManager.FindById( User.Identity.GetUserId() );
-				if ( user != null && user.IsAdmin )
+				if ( user != null && user.Type == UserType.Admin )
 				{
 					return RedirectToAction( "Index", "Admin" );
 				}
