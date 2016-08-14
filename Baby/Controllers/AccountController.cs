@@ -353,19 +353,22 @@ namespace Baby.Controllers
 
 				if ( result.Succeeded )
 				{
+					db.SaveChanges();
+
 					try
 					{
-						org.Users.Add( user );
+						ApplicationUser newUser = db.Users.Find( user.Id );
+						org.Users.Add( newUser );
 						db.Entry<Organization>( org ).State = EntityState.Modified;
 
-						user.Emails.Add( new Email
+						newUser.Emails.Add( new Email
 						{
 							EmailId = Guid.NewGuid(),
 							Address = model.Email,
 							Type = "Work",
 						} );
 
-						user.Phones.Add( new Phone
+						newUser.Phones.Add( new Phone
 						{
 							PhoneId = Guid.NewGuid(),
 							Number = model.Phone,
@@ -373,7 +376,6 @@ namespace Baby.Controllers
 							Type = "Work",
 						} );
 
-						db.Entry<ApplicationUser>( user ).State = EntityState.Modified;
 						db.SaveChanges();
 					}
 					catch ( Exception /*e*/ )

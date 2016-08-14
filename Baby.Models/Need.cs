@@ -14,8 +14,8 @@
 		{
 			DisplayNeeds = new HashSet<DisplayNeed>();
 			NeedActivities = new HashSet<NeedActivity>();
-			//			Donations = new HashSet<Donation>();
-			//			NeedSharings = new HashSet<NeedSharing>();
+			Donations = new HashSet<Donation>();
+			//NeedSharings = new HashSet<NeedSharing>();
 		}
 
 		[Key]
@@ -48,8 +48,10 @@
 		[StringLength( 100 )]
 		public string Tags { get; set; }
 
-		[Required]
-		public File File { get; set; }
+		public Guid? Image1Id { get; set; }
+		public File Image1 { get; set; }
+		public Guid? Image2Id { get; set; }
+		public File Image2 { get; set; }
 
 		[SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]
 		public virtual ICollection<DisplayNeed> DisplayNeeds { get; set; }
@@ -60,14 +62,20 @@
 		[SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]
 		public virtual ICollection<NeedActivity> NeedActivities { get; set; }
 
+		[Required]
+		public Guid CountryId { get; set; }
 		public virtual Country Country { get; set; }
 
 		[Required]
+		public Guid NeedTypeId { get; set; }
 		public virtual NeedType NeedType { get; set; }
 
 		[Required]
+		public Guid OrganizationId { get; set; }
 		public virtual Organization Organization { get; set; }
 
+		[Required]
+		public Guid RegionId { get; set; }
 		public virtual Region Region { get; set; }
 	}
 }

@@ -7,6 +7,7 @@ using Baby.Models;
 
 namespace Baby.Controllers
 {
+	[AllowAnonymous]
 	public class FileController : Controller
 	{
 		private ApplicationDbContext db = new ApplicationDbContext();

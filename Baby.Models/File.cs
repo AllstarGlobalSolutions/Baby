@@ -27,8 +27,5 @@
 
 		[Required]
 		public FileType FileType { get; set; }
-
-		//public virtual Need Need { get; set; }
-		//public virtual Advertisement Advertisement { get; set; }
 	}
 }

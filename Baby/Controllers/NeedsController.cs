@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
@@ -7,9 +6,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Baby.Models;
+using Baby.Models.ViewModels;
 using Baby.Controllers.Base;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity.Infrastructure;
 
 namespace Baby.Controllers
@@ -32,7 +30,7 @@ namespace Baby.Controllers
 			{
 				return new HttpStatusCodeResult( HttpStatusCode.BadRequest );
 			}
-			Need need = db.Needs.Include( n => n.File ).SingleOrDefault( n => n.NeedId == id );
+			Need need = db.Needs.SingleOrDefault( n => n.NeedId == id );
 			if ( need == null )
 			{
 				return HttpNotFound();
@@ -46,7 +44,7 @@ namespace Baby.Controllers
 			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name" );
 			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description" );
 			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name" );
-			return View();
+			return View( new Need { OrganizationId = ViewBag.Organization.OrganizationId } );
 		}
 
 		// POST: Needs/Create
@@ -54,50 +52,62 @@ namespace Baby.Controllers
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Create( [Bind( Include = "NeedId,Caption,Story,FileId,IsUrgent,PublishDate,EndDate,HasNeedBeenMet,IsActive,AmountNeeded,AdditionalTags,OrganizationId,NeedTypeId,RegionId,CountryId,City" )] Need need, HttpPostedFileBase Image )
+		//		public ActionResult Create( [Bind( Include = "Caption,Story,IsUrgent,PublishDate,EndDate,AmountNeeded,Tags,CountryId,RegionId,NeedTypeId" )] CreateNeedViewModel model, HttpPostedFileBase Image1, HttpPostedFileBase Image2 )
+		public ActionResult Create( [Bind( Include = "Caption,Story,IsUrgent,PublishDate,EndDate,AmountNeeded,Tags,CountryId,RegionId,NeedTypeId,OrganizationId,Image1Id,Image2Id" )] Need need, HttpPostedFileBase Image1, HttpPostedFileBase Image2 )
 		{
 			try
 			{
 				if ( ModelState.IsValid )
 				{
-					Guid fileId = Guid.NewGuid();
-
-					if ( Image != null && Image.ContentLength > 0 )
+					if ( Image1 != null && Image1.ContentLength > 0 )
 					{
-						Baby.Models.File file = new Baby.Models.File
-						{
-							FileId = fileId,
-							ContentType = Image.ContentType,
-							FileName = System.IO.Path.GetFileName( Image.FileName ),
-							FileType = FileType.NeedImage
-						};
+						need.NeedId = Guid.NewGuid();
+						need.IsActive = true;
+						need.HasNeedBeenMet = false;
+						db.Needs.Add( need );
 
-						using ( var reader = new System.IO.BinaryReader( Image.InputStream ) )
+						need.Image1 = CreateFileFromImage( Image1 );
+						need.Image1Id = need.Image1.FileId;
+
+						if ( Image2 != null && Image2.ContentLength > 0 )
 						{
-							file.Content = reader.ReadBytes( Image.ContentLength );
+							need.Image2 = CreateFileFromImage( Image2 );
+							need.Image2Id = need.Image2.FileId;
 						}
 
-						db.Files.Add( file );
-						db.SaveChanges();
-
-						need.NeedId = Guid.NewGuid();
-						need.File.FileId = fileId;
-						db.Needs.Add( need );
-						db.SaveChanges();
+						int changes = db.SaveChanges();
 
 						return RedirectToAction( "Index" );
 					}
 				}
 			}
-			catch ( RetryLimitExceededException /*e*/)
+			catch ( Exception e )
 			{
 				ModelState.AddModelError( "", "Unable to Save Changes." );
 			}
 
-			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name", need.Country.CountryId );
-			ViewBag.NeedTypeId = new SelectList( db.NeedTypes, "NeedTypeId", "Description", need.NeedType.NeedTypeId );
-			ViewBag.RegionId = new SelectList( db.Regions, "RegionId", "Name", need.Region.RegionId );
+			ViewBag.CountryId = new SelectList( db.Countries.OrderBy( c => c.Name ), "CountryId", "Name", need.CountryId );
+			ViewBag.NeedTypeId = new SelectList( db.NeedTypes.OrderBy( nt => nt.Description ), "NeedTypeId", "Description", need.NeedTypeId );
+			ViewBag.RegionId = new SelectList( db.Regions.OrderBy( r => r.Name ), "RegionId", "Name", need.RegionId );
 			return View( need );
+		}
+
+		protected Baby.Models.File CreateFileFromImage( HttpPostedFileBase image )
+		{
+			Baby.Models.File file = new Baby.Models.File
+			{
+				FileId = Guid.NewGuid(),
+				ContentType = image.ContentType,
+				FileName = System.IO.Path.GetFileName( image.FileName ),
+				FileType = FileType.NeedImage
+			};
+
+			using ( var reader = new System.IO.BinaryReader( image.InputStream ) )
+			{
+				file.Content = reader.ReadBytes( image.ContentLength );
+			}
+
+			return file;
 		}
 
 		// GET: Needs/Edit/5
@@ -108,7 +118,7 @@ namespace Baby.Controllers
 				return new HttpStatusCodeResult( HttpStatusCode.BadRequest );
 			}
 
-			Need need = db.Needs.Include( n => n.File ).SingleOrDefault( n => n.NeedId == id );
+			Need need = db.Needs.SingleOrDefault( n => n.NeedId == id );
 
 			if ( need == null )
 			{
@@ -132,7 +142,7 @@ namespace Baby.Controllers
 			{
 				if ( Image != null && Image.ContentLength > 0 )
 				{
-					Baby.Models.File file = db.Files.Find( need.File.FileId );
+					Baby.Models.File file = db.Files.Find( need.Image1.FileId );
 					if ( file == null )
 					{
 						file = new Baby.Models.File
@@ -150,7 +160,7 @@ namespace Baby.Controllers
 					db.Files.Add( file );
 					db.SaveChanges();
 
-					need.File.FileId = file.FileId;
+					need.Image1.FileId = file.FileId;
 
 					db.Entry( need ).State = EntityState.Modified;
 					db.SaveChanges();

@@ -13,8 +13,9 @@
 		{
 			AddUsers( context );
 			AddRegions( context );
-			AddCurrency( context );
-			ReadAndInsertCountries( context );
+			AddNeedTypes( context );
+			AddCurrencies( context );
+			AddCountries( context );
 
 			base.Seed( context );
 		}
@@ -24,7 +25,7 @@
 		 *		1 - The countries.csv file has lines with more than one (1) comma
 		 *		2 - The countries.csv file has country names greater than 50 characters
 		*/
-		protected void ReadAndInsertCountries( ApplicationDbContext context )
+		protected void AddCountries( ApplicationDbContext context )
 		{
 			using ( Stream stream = this.GetType().Assembly.GetManifestResourceStream( "Baby.Models.countries.csv" ) )
 			{
@@ -77,7 +78,7 @@
 			context.Regions.Add( new Region { RegionId = Guid.NewGuid(), Name = "Oceania" } );
 		}
 
-		public void AddNeedType( ApplicationDbContext context )
+		public void AddNeedTypes( ApplicationDbContext context )
 		{
 			context.NeedTypes.Add( new NeedType { NeedTypeId = Guid.NewGuid(), Description = "Hunger" } );
 			context.NeedTypes.Add( new NeedType { NeedTypeId = Guid.NewGuid(), Description = "Medical" } );
@@ -88,7 +89,7 @@
 			context.NeedTypes.Add( new NeedType { NeedTypeId = Guid.NewGuid(), Description = "Transportation" } );
 		}
 
-		public void AddCurrency( ApplicationDbContext context )
+		public void AddCurrencies( ApplicationDbContext context )
 		{
 			context.Currencies.Add( new Currency { CurrencyId = Guid.NewGuid(), Code = "CNY", Description = "Chinese Yuan (RMB)", Symbol = "元", IsSymbolAfter = true } );
 			context.Currencies.Add( new Currency { CurrencyId = Guid.NewGuid(), Code = "USD", Description = "US Dollar", Symbol = "$", IsSymbolAfter = false } );

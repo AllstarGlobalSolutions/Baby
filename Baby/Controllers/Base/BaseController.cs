@@ -24,5 +24,17 @@ namespace Baby.Controllers.Base
 				ViewBag.Organization = this.Organization;
 			}
 		}
+
+		protected ApplicationUser GetUser()
+		{
+			ApplicationUserManager um = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+			return um.FindById( User.Identity.GetUserId() );
+		}
+
+		protected Organization GetOrganization()
+		{
+			return GetUser().Organization;
+		}
+
 	}
 }

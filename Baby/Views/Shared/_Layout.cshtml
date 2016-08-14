@@ -29,7 +29,7 @@
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li>@Html.ActionLink( "Home", "Index", "Home" )</li>
-					@if ( Request.IsLocal )
+					@if ( Request.IsLocal && Request.IsAuthenticated )
 					{
 						<li>@Html.ActionLink( "Needs", "Index", "Needs" )</li>
 					}

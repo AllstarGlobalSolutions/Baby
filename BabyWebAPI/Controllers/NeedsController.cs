@@ -37,12 +37,17 @@ namespace BabyWebAPI.Controllers
 			return Ok( need );
 		}
 
+		/*
+		 * This class is used to send a response to the mobile app
+		 * If we make changes here we need to make sure that we make them in the NeedPage.xaml.cs in the BabyApp project.
+		 */
 		class NeedResponse
 		{
 			public Guid NeedId { get; set; }
 			public string Caption { get; set; }
 			public string Story { get; set; }
-			public Guid? FileId { get; set; }
+			public Guid? FileId1 { get; set; }
+			public Guid? FileId2 { get; set; }
 			public string OrgName { get; set; }
 			public string NeedType { get; set; }
 			public string Tags { get; set; }
@@ -52,11 +57,23 @@ namespace BabyWebAPI.Controllers
 		// GET: api/Needs/Next/5
 		[ResponseType( typeof( NeedResponse ) )]
 		[Route( "Next/{id}" )]
-//		[HttpGet]
 		public async Task<IHttpActionResult> GetNextNeed( string id )
 		{
 			List<DisplayNeed> displayNeeds = await db.DisplayNeeds.Where( dn => dn.User.Id == id ).ToListAsync();
-			Need need = db.Needs.Include( n => n.Country ).Include( n => n.Region ).Include( n => n.Organization ).Include( n => n.NeedType ).Where( n => !displayNeeds.Select( dn => dn.Need.NeedId ).Contains( n.NeedId ) ).FirstOrDefault();
+			Need need = null;
+
+			if ( r.Next() % 2 == 0 )
+			{
+				// get the first need that is not in the displayneeds
+				// TODO: change logic to include urgent requests
+				// TODO: need to send more data
+				need = db.Needs
+					.Include( n => n.Country )
+					.Include( n => n.Region )
+					.Include( n => n.Organization )
+					.Include( n => n.NeedType )
+					.Where( n => !displayNeeds.Select( dn => dn.Need.NeedId ).Contains( n.NeedId ) ).FirstOrDefault();
+			}
 
 			// if we found a need that hasn't been displayed
 			if ( need != default( Need ) )
@@ -66,12 +83,29 @@ namespace BabyWebAPI.Controllers
 					NeedId = need.NeedId,
 					Caption = need.Caption,
 					Story = need.Story,
-					FileId = need.File.FileId,
+					FileId1 = need.Image1Id,
+					FileId2 = need.Image2Id,
 					OrgName = need.Organization.Name,
 					NeedType = need.NeedType.Description,
 					Tags = need.Tags,
 					AmountNeeded = need.AmountNeeded
 				};
+
+				DisplayNeed dn = new DisplayNeed
+				{
+					DisplayNeedId = Guid.NewGuid(),
+					Count = 1,
+					DisplayDttm = DateTime.Now,
+					Need = need,
+					User = db.Users.Find( id )
+				};
+
+				db.DisplayNeeds.Add( dn );
+				if ( db.SaveChanges() == 0 )
+				{
+					return InternalServerError();
+				}
+
 				return Ok( needResponse );
 			}
 			else
