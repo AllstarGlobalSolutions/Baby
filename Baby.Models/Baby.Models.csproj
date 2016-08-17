@@ -95,6 +95,7 @@
     <Compile Include="Country.cs" />
     <Compile Include="Currency.cs" />
     <Compile Include="DeviceInfo.cs" />
+    <Compile Include="DisplayAdvertisement.cs" />
     <Compile Include="DisplayNeed.cs" />
     <Compile Include="Donation.cs" />
     <Compile Include="Email.cs" />

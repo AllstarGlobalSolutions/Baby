@@ -68,6 +68,7 @@
 		public virtual DbSet<File> Files { get; set; }
 		public virtual DbSet<Need> Needs { get; set; }
 		public virtual DbSet<DisplayNeed> DisplayNeeds { get; set; }
+		public virtual DbSet<DisplayAdvertisement> DisplayAdvertisements { get; set; }
 		public virtual DbSet<NeedType> NeedTypes { get; set; }
 		public virtual DbSet<Organization> Organizations { get; set; }
 		public virtual DbSet<Region> Regions { get; set; }

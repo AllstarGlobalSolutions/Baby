@@ -1,131 +1,189 @@
-﻿using System;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Description;
-using Baby.Models;
-
-namespace BabyWebAPI.Controllers
+﻿namespace BabyWebAPI.Controllers
 {
-    public class AdvertisementsController : ApiController
-    {
-        private ApplicationDbContext db = new ApplicationDbContext();
+	using System;
+	using System.Data.Entity;
+	using System.Data.Entity.Infrastructure;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Net;
+	using System.Threading.Tasks;
+	using System.Web.Http;
+	using System.Web.Http.Description;
+	using Baby.Models;
 
-        // GET: api/Advertisements
-        public IQueryable<Advertisement> GetAdvertisements()
-        {
-            return db.Advertisements;
-        }
+	public class AdvertisementsController : ApiController
+	{
+		private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/Advertisements/5
-        [ResponseType(typeof(Advertisement))]
-        public async Task<IHttpActionResult> GetAdvertisement(Guid id)
-        {
-            Advertisement advertisement = await db.Advertisements.FindAsync(id);
-            if (advertisement == null)
-            {
-                return NotFound();
-            }
+		// GET: api/Advertisements
+		public IQueryable<Advertisement> GetAdvertisements()
+		{
+			return db.Advertisements;
+		}
 
-            return Ok(advertisement);
-        }
+		// GET: api/Advertisements/5
+		[ResponseType( typeof( Advertisement ) )]
+		public async Task<IHttpActionResult> GetAdvertisement( Guid id )
+		{
+			Advertisement advertisement = await db.Advertisements.FindAsync( id );
+			if ( advertisement == null )
+			{
+				return NotFound();
+			}
 
-        // PUT: api/Advertisements/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutAdvertisement(Guid id, Advertisement advertisement)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+			return Ok( advertisement );
+		}
 
-            if (id != advertisement.AdvertisementId)
-            {
-                return BadRequest();
-            }
+		/*
+		 * This class is used to send  response to the mobile app.  If there are any changes needed, you need to change in BabyApp as well.
+		 */
+		class AdResponse
+		{
+			public Guid? ImageId;
+			public string ClickUrl;
+		}
 
-            db.Entry(advertisement).State = EntityState.Modified;
+		// GET: api/Advertisements/Next/5
+		[ResponseType( typeof( AdResponse ) )]
+		[Route( "Next/{id}" )]
+		public async Task<IHttpActionResult> GetNextAdvertisement( string id )
+		{
+			List<DisplayAdvertisement> displayAds = await db.DisplayAdvertisements.Where( da => da.User.Id == id ).ToListAsync();
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdvertisementExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+			// get the first ad
+			// TODO: change to other ads -- need to store some kind of order of ads displayed
+			Advertisement ad = db.Advertisements
+					.Where( a => !displayAds.Select( da => da.Advertisement.AdvertisementId ).Contains( a.AdvertisementId ) ).FirstOrDefault();
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
+			// if we found a ad that hasn't been displayed
+			if ( ad != default( Advertisement ) )
+			{
+				AdResponse adResponse = new AdResponse
+				{
+					ImageId = ad.FileId,
+					ClickUrl = ad.ClickUrl
+				};
 
-        // POST: api/Advertisements
-        [ResponseType(typeof(Advertisement))]
-        public async Task<IHttpActionResult> PostAdvertisement(Advertisement advertisement)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+				DisplayAdvertisement da = new DisplayAdvertisement
+				{
+					DisplayAdvertisementId = Guid.NewGuid(),
+					DisplayDttmUTC = DateTime.UtcNow,
+					Advertisement = ad,
+					User = db.Users.Find( id )
+				};
 
-            db.Advertisements.Add(advertisement);
+				db.DisplayAdvertisements.Add( da );
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (AdvertisementExists(advertisement.AdvertisementId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+				if ( db.SaveChanges() == 0 )
+				{
+					return InternalServerError();
+				}
 
-            return CreatedAtRoute("DefaultApi", new { id = advertisement.AdvertisementId }, advertisement);
-        }
+				return Ok( adResponse );
+			}
+			else
+			{
+				AdResponse adResponse = new AdResponse
+				{
+					ImageId = null
+				};
+				return Ok( adResponse );
+			}
+		}
 
-        // DELETE: api/Advertisements/5
-        [ResponseType(typeof(Advertisement))]
-        public async Task<IHttpActionResult> DeleteAdvertisement(Guid id)
-        {
-            Advertisement advertisement = await db.Advertisements.FindAsync(id);
-            if (advertisement == null)
-            {
-                return NotFound();
-            }
+		// PUT: api/Advertisements/5
+		[ResponseType( typeof( void ) )]
+		public async Task<IHttpActionResult> PutAdvertisement( Guid id, Advertisement advertisement )
+		{
+			if ( !ModelState.IsValid )
+			{
+				return BadRequest( ModelState );
+			}
 
-            db.Advertisements.Remove(advertisement);
-            await db.SaveChangesAsync();
+			if ( id != advertisement.AdvertisementId )
+			{
+				return BadRequest();
+			}
 
-            return Ok(advertisement);
-        }
+			db.Entry( advertisement ).State = EntityState.Modified;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+			try
+			{
+				await db.SaveChangesAsync();
+			}
+			catch ( DbUpdateConcurrencyException )
+			{
+				if ( !AdvertisementExists( id ) )
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
 
-        private bool AdvertisementExists(Guid id)
-        {
-            return db.Advertisements.Count(e => e.AdvertisementId == id) > 0;
-        }
-    }
+			return StatusCode( HttpStatusCode.NoContent );
+		}
+
+		// POST: api/Advertisements
+		[ResponseType( typeof( Advertisement ) )]
+		public async Task<IHttpActionResult> PostAdvertisement( Advertisement advertisement )
+		{
+			if ( !ModelState.IsValid )
+			{
+				return BadRequest( ModelState );
+			}
+
+			db.Advertisements.Add( advertisement );
+
+			try
+			{
+				await db.SaveChangesAsync();
+			}
+			catch ( DbUpdateException )
+			{
+				if ( AdvertisementExists( advertisement.AdvertisementId ) )
+				{
+					return Conflict();
+				}
+				else
+				{
+					throw;
+				}
+			}
+
+			return CreatedAtRoute( "DefaultApi", new { id = advertisement.AdvertisementId }, advertisement );
+		}
+
+		// DELETE: api/Advertisements/5
+		[ResponseType( typeof( Advertisement ) )]
+		public async Task<IHttpActionResult> DeleteAdvertisement( Guid id )
+		{
+			Advertisement advertisement = await db.Advertisements.FindAsync( id );
+			if ( advertisement == null )
+			{
+				return NotFound();
+			}
+
+			db.Advertisements.Remove( advertisement );
+			await db.SaveChangesAsync();
+
+			return Ok( advertisement );
+		}
+
+		protected override void Dispose( bool disposing )
+		{
+			if ( disposing )
+			{
+				db.Dispose();
+			}
+			base.Dispose( disposing );
+		}
+
+		private bool AdvertisementExists( Guid id )
+		{
+			return db.Advertisements.Count( e => e.AdvertisementId == id ) > 0;
+		}
+	}
 }

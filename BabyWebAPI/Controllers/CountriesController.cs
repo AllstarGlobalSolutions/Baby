@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -11,44 +13,44 @@ using Baby.Models;
 
 namespace BabyWebAPI.Controllers
 {
-    public class NeedTypesController : ApiController
+    public class CountriesController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/NeedTypes
-        public IEnumerable<NeedType> GetNeedTypes()
+        // GET: api/Countries
+        public IEnumerable<Country> GetCountries()
         {
-            return db.NeedTypes.OrderBy( nt => nt.Description ).ToList();
+            return db.Countries.OrderBy( c => c.Name ).ToList();
         }
 
-        // GET: api/NeedTypes/5
-        [ResponseType(typeof(NeedType))]
-        public async Task<IHttpActionResult> GetNeedType(Guid id)
+        // GET: api/Countries/5
+        [ResponseType(typeof(Country))]
+        public async Task<IHttpActionResult> GetCountry(Guid id)
         {
-            NeedType needType = await db.NeedTypes.FindAsync(id);
-            if (needType == null)
+            Country country = await db.Countries.FindAsync(id);
+            if (country == null)
             {
                 return NotFound();
             }
 
-            return Ok(needType);
+            return Ok(country);
         }
 
-        // PUT: api/NeedTypes/5
+        // PUT: api/Countries/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutNeedType(Guid id, NeedType needType)
+        public async Task<IHttpActionResult> PutCountry(Guid id, Country country)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != needType.NeedTypeId)
+            if (id != country.CountryId)
             {
                 return BadRequest();
             }
 
-            db.Entry(needType).State = EntityState.Modified;
+            db.Entry(country).State = EntityState.Modified;
 
             try
             {
@@ -56,7 +58,7 @@ namespace BabyWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!NeedTypeExists(id))
+                if (!CountryExists(id))
                 {
                     return NotFound();
                 }
@@ -69,16 +71,16 @@ namespace BabyWebAPI.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/NeedTypes
-        [ResponseType(typeof(NeedType))]
-        public async Task<IHttpActionResult> PostNeedType(NeedType needType)
+        // POST: api/Countries
+        [ResponseType(typeof(Country))]
+        public async Task<IHttpActionResult> PostCountry(Country country)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.NeedTypes.Add(needType);
+            db.Countries.Add(country);
 
             try
             {
@@ -86,7 +88,7 @@ namespace BabyWebAPI.Controllers
             }
             catch (DbUpdateException)
             {
-                if (NeedTypeExists(needType.NeedTypeId))
+                if (CountryExists(country.CountryId))
                 {
                     return Conflict();
                 }
@@ -96,23 +98,23 @@ namespace BabyWebAPI.Controllers
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { id = needType.NeedTypeId }, needType);
+            return CreatedAtRoute("DefaultApi", new { id = country.CountryId }, country);
         }
 
-        // DELETE: api/NeedTypes/5
-        [ResponseType(typeof(NeedType))]
-        public async Task<IHttpActionResult> DeleteNeedType(Guid id)
+        // DELETE: api/Countries/5
+        [ResponseType(typeof(Country))]
+        public async Task<IHttpActionResult> DeleteCountry(Guid id)
         {
-            NeedType needType = await db.NeedTypes.FindAsync(id);
-            if (needType == null)
+            Country country = await db.Countries.FindAsync(id);
+            if (country == null)
             {
                 return NotFound();
             }
 
-            db.NeedTypes.Remove(needType);
+            db.Countries.Remove(country);
             await db.SaveChangesAsync();
 
-            return Ok(needType);
+            return Ok(country);
         }
 
         protected override void Dispose(bool disposing)
@@ -124,9 +126,9 @@ namespace BabyWebAPI.Controllers
             base.Dispose(disposing);
         }
 
-        private bool NeedTypeExists(Guid id)
+        private bool CountryExists(Guid id)
         {
-            return db.NeedTypes.Count(e => e.NeedTypeId == id) > 0;
+            return db.Countries.Count(e => e.CountryId == id) > 0;
         }
     }
 }

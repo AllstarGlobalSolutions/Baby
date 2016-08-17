@@ -25,7 +25,7 @@
 		[StringLength( 30 )]
 		public string CampaignName { get; set; }
 
-		[Required]
+		public Guid? FileId { get; set; }
 		public File File { get; set; }
 
 		[Required]

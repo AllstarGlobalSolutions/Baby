@@ -60,20 +60,16 @@ namespace BabyWebAPI.Controllers
 		public async Task<IHttpActionResult> GetNextNeed( string id )
 		{
 			List<DisplayNeed> displayNeeds = await db.DisplayNeeds.Where( dn => dn.User.Id == id ).ToListAsync();
-			Need need = null;
 
-			if ( r.Next() % 2 == 0 )
-			{
-				// get the first need that is not in the displayneeds
-				// TODO: change logic to include urgent requests
-				// TODO: need to send more data
-				need = db.Needs
+			// get the first need that is not in the displayneeds
+			// TODO: change logic to include urgent requests
+			// TODO: need to send more data
+			Need need = db.Needs
 					.Include( n => n.Country )
 					.Include( n => n.Region )
 					.Include( n => n.Organization )
 					.Include( n => n.NeedType )
 					.Where( n => !displayNeeds.Select( dn => dn.Need.NeedId ).Contains( n.NeedId ) ).FirstOrDefault();
-			}
 
 			// if we found a need that hasn't been displayed
 			if ( need != default( Need ) )
@@ -95,12 +91,13 @@ namespace BabyWebAPI.Controllers
 				{
 					DisplayNeedId = Guid.NewGuid(),
 					Count = 1,
-					DisplayDttm = DateTime.Now,
+					DisplayDttmUTC = DateTime.UtcNow,
 					Need = need,
 					User = db.Users.Find( id )
 				};
 
 				db.DisplayNeeds.Add( dn );
+
 				if ( db.SaveChanges() == 0 )
 				{
 					return InternalServerError();

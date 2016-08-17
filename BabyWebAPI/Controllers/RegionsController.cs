@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -11,44 +13,44 @@ using Baby.Models;
 
 namespace BabyWebAPI.Controllers
 {
-    public class NeedTypesController : ApiController
+    public class RegionsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/NeedTypes
-        public IEnumerable<NeedType> GetNeedTypes()
+        // GET: api/Regions
+        public IEnumerable<Region> GetRegions()
         {
-            return db.NeedTypes.OrderBy( nt => nt.Description ).ToList();
+            return db.Regions.OrderBy( r => r.Name ).ToList();
         }
 
-        // GET: api/NeedTypes/5
-        [ResponseType(typeof(NeedType))]
-        public async Task<IHttpActionResult> GetNeedType(Guid id)
+        // GET: api/Regions/5
+        [ResponseType(typeof(Region))]
+        public async Task<IHttpActionResult> GetRegion(Guid id)
         {
-            NeedType needType = await db.NeedTypes.FindAsync(id);
-            if (needType == null)
+            Region region = await db.Regions.FindAsync(id);
+            if (region == null)
             {
                 return NotFound();
             }
 
-            return Ok(needType);
+            return Ok(region);
         }
 
-        // PUT: api/NeedTypes/5
+        // PUT: api/Regions/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutNeedType(Guid id, NeedType needType)
+        public async Task<IHttpActionResult> PutRegion(Guid id, Region region)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != needType.NeedTypeId)
+            if (id != region.RegionId)
             {
                 return BadRequest();
             }
 
-            db.Entry(needType).State = EntityState.Modified;
+            db.Entry(region).State = EntityState.Modified;
 
             try
             {
@@ -56,7 +58,7 @@ namespace BabyWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!NeedTypeExists(id))
+                if (!RegionExists(id))
                 {
                     return NotFound();
                 }
@@ -69,16 +71,16 @@ namespace BabyWebAPI.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/NeedTypes
-        [ResponseType(typeof(NeedType))]
-        public async Task<IHttpActionResult> PostNeedType(NeedType needType)
+        // POST: api/Regions
+        [ResponseType(typeof(Region))]
+        public async Task<IHttpActionResult> PostRegion(Region region)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.NeedTypes.Add(needType);
+            db.Regions.Add(region);
 
             try
             {
@@ -86,7 +88,7 @@ namespace BabyWebAPI.Controllers
             }
             catch (DbUpdateException)
             {
-                if (NeedTypeExists(needType.NeedTypeId))
+                if (RegionExists(region.RegionId))
                 {
                     return Conflict();
                 }
@@ -96,23 +98,23 @@ namespace BabyWebAPI.Controllers
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { id = needType.NeedTypeId }, needType);
+            return CreatedAtRoute("DefaultApi", new { id = region.RegionId }, region);
         }
 
-        // DELETE: api/NeedTypes/5
-        [ResponseType(typeof(NeedType))]
-        public async Task<IHttpActionResult> DeleteNeedType(Guid id)
+        // DELETE: api/Regions/5
+        [ResponseType(typeof(Region))]
+        public async Task<IHttpActionResult> DeleteRegion(Guid id)
         {
-            NeedType needType = await db.NeedTypes.FindAsync(id);
-            if (needType == null)
+            Region region = await db.Regions.FindAsync(id);
+            if (region == null)
             {
                 return NotFound();
             }
 
-            db.NeedTypes.Remove(needType);
+            db.Regions.Remove(region);
             await db.SaveChangesAsync();
 
-            return Ok(needType);
+            return Ok(region);
         }
 
         protected override void Dispose(bool disposing)
@@ -124,9 +126,9 @@ namespace BabyWebAPI.Controllers
             base.Dispose(disposing);
         }
 
-        private bool NeedTypeExists(Guid id)
+        private bool RegionExists(Guid id)
         {
-            return db.NeedTypes.Count(e => e.NeedTypeId == id) > 0;
+            return db.Regions.Count(e => e.RegionId == id) > 0;
         }
     }
 }

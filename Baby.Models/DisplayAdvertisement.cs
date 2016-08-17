@@ -4,18 +4,14 @@
 	using System.ComponentModel.DataAnnotations;
 	using System.ComponentModel.DataAnnotations.Schema;
 
-	[Table( "DisplayNeed" )]
-	public partial class DisplayNeed
+	public class DisplayAdvertisement
 	{
 		[Key]
-		public Guid DisplayNeedId { get; set; }
+		public Guid DisplayAdvertisementId { get; set; }
 
 		public DateTime DisplayDttmUTC { get; set; }
 
-		public int Count { get; set; }
-
+		public virtual Advertisement Advertisement { get; set; }
 		public virtual ApplicationUser User { get; set; }
-
-		public virtual Need Need { get; set; }
 	}
 }
