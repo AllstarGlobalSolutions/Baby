@@ -58,6 +58,24 @@ namespace Baby.Controllers
 			return View();
 		}
 
+		protected Baby.Models.File CreateFileFromImage( HttpPostedFileBase image )
+		{
+			Baby.Models.File file = new Baby.Models.File
+			{
+				FileId = Guid.NewGuid(),
+				ContentType = image.ContentType,
+				FileName = System.IO.Path.GetFileName( image.FileName ),
+				FileType = FileType.AdImage
+			};
+
+			using ( var reader = new System.IO.BinaryReader( image.InputStream ) )
+			{
+				file.Content = reader.ReadBytes( image.ContentLength );
+			}
+
+			return file;
+		}
+
 		// POST: Advertisements/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -65,34 +83,27 @@ namespace Baby.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Create( [Bind( Include = "AdvertisementId,CampaignName,FileId,ClickUrl,StartDate,EndDate,AdvertiserId" )] Advertisement advertisement, HttpPostedFileBase Image )
 		{
-			if ( ModelState.IsValid )
+			try
 			{
-				Guid fileId = Guid.NewGuid();
-
-				if ( Image != null && Image.ContentLength > 0 )
+				if ( ModelState.IsValid )
 				{
-					Baby.Models.File file = new Baby.Models.File
+					if ( Image != null && Image.ContentLength > 0 )
 					{
-						FileId = fileId,
-						ContentType = Image.ContentType,
-						FileName = System.IO.Path.GetFileName( Image.FileName ),
-						FileType = FileType.NeedImage
-					};
+						advertisement.AdvertisementId = Guid.NewGuid();
+						db.Advertisements.Add( advertisement );
 
-					using ( var reader = new System.IO.BinaryReader( Image.InputStream ) )
-					{
-						file.Content = reader.ReadBytes( Image.ContentLength );
+						advertisement.File = CreateFileFromImage( Image );
+						advertisement.FileId = advertisement.File.FileId;
+
+						db.SaveChanges();
+
+						return RedirectToAction( "Index" );
 					}
-
-					db.Files.Add( file );
-					db.SaveChanges();
-
-					advertisement.AdvertisementId = Guid.NewGuid();
-					advertisement.File.FileId = fileId;
-					db.Advertisements.Add( advertisement );
-					db.SaveChanges();
-					return RedirectToAction( "Index" );
 				}
+			}
+			catch ( Exception e )
+			{
+				ModelState.AddModelError( "", "Unable to Save Changes." );
 			}
 
 			ViewBag.Advertiser = db.Advertisers.Find( advertisement.Advertiser.AdvertiserId );

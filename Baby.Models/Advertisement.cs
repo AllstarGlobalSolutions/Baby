@@ -49,6 +49,7 @@
 		public virtual ICollection<NeedType> NeedTypes { get; set; }
 
 		[Required]
+		public Guid AdvertiserId {get;set;}
 		public virtual Advertiser Advertiser { get; set; }
 	}
 }

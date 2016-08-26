@@ -59,17 +59,28 @@ namespace BabyWebAPI.Controllers
 		[Route( "Next/{id}" )]
 		public async Task<IHttpActionResult> GetNextNeed( string id )
 		{
-			List<DisplayNeed> displayNeeds = await db.DisplayNeeds.Where( dn => dn.User.Id == id ).ToListAsync();
+			// if there are no needs, just return a message through the caption.  There's no error, just no needs in the db
+			if ( db.Needs.Count() == 0 )
+			{
+				NeedResponse nr = new NeedResponse();
+				nr.Caption = "No Needs Available";
+				return Ok( nr );
+			}
+
+			List<DisplayNeed> displayNeeds = await db.DisplayNeeds.Where( d => d.User.Id == id ).ToListAsync();
 
 			// get the first need that is not in the displayneeds
 			// TODO: change logic to include urgent requests
 			// TODO: need to send more data
-			Need need = db.Needs
+			var dn = displayNeeds.Select( d => d.NeedId );
+			Need need = db.Needs.Where( n => !dn.Contains( n.NeedId ) ).FirstOrDefault();
+
+/*			Need need = db.Needs
 					.Include( n => n.Country )
 					.Include( n => n.Region )
 					.Include( n => n.Organization )
 					.Include( n => n.NeedType )
-					.Where( n => !displayNeeds.Select( dn => dn.Need.NeedId ).Contains( n.NeedId ) ).FirstOrDefault();
+					.Where( n => !displayNeeds.Select( dn => dn.Need.NeedId ).Contains( n.NeedId ) ).FirstOrDefault(); */
 
 			// if we found a need that hasn't been displayed
 			if ( need != default( Need ) )
@@ -87,7 +98,7 @@ namespace BabyWebAPI.Controllers
 					AmountNeeded = need.AmountNeeded
 				};
 
-				DisplayNeed dn = new DisplayNeed
+				DisplayNeed displayNeed = new DisplayNeed
 				{
 					DisplayNeedId = Guid.NewGuid(),
 					Count = 1,
@@ -96,7 +107,7 @@ namespace BabyWebAPI.Controllers
 					User = db.Users.Find( id )
 				};
 
-				db.DisplayNeeds.Add( dn );
+				db.DisplayNeeds.Add( displayNeed );
 
 				if ( db.SaveChanges() == 0 )
 				{
@@ -107,10 +118,37 @@ namespace BabyWebAPI.Controllers
 			}
 			else
 			{
+				var anon = db.DisplayNeeds.Where( a => a.User.Id == id ).GroupBy( b => b.NeedId ).Select( c => new { NeedId = c.Key, Max = c.Max( e => e.Count ) } ).FirstOrDefault();
+				//DisplayNeed displayNeed = db.DisplayNeeds.Where( d => d.User.Id == id ).GroupBy( g => g.NeedId );
+				//.Select( q => new { NeedId = g.NeedId, Max = q.Max( x => x.Count ) } );
+
+				need = db.Needs.Where( n => n.NeedId == anon.NeedId ).FirstOrDefault();
+
 				NeedResponse needResponse = new NeedResponse
 				{
-					Caption = "No Needs Available"
+					NeedId = need.NeedId,
+					Caption = need.Caption,
+					Story = need.Story,
+					FileId1 = need.Image1Id,
+					FileId2 = need.Image2Id,
+					OrgName = need.Organization.Name,
+					NeedType = need.NeedType.Description,
+					Tags = need.Tags,
+					AmountNeeded = need.AmountNeeded
 				};
+
+				DisplayNeed displayNeed = new DisplayNeed
+				{
+					DisplayNeedId = Guid.NewGuid(),
+					Count = anon.Max + 1,
+					DisplayDttmUTC = DateTime.UtcNow,
+					Need = need,
+					User = db.Users.Find( id )
+				};
+
+				db.DisplayNeeds.Add( displayNeed );
+				db.SaveChanges();
+
 				return Ok( needResponse );
 			}
 		}

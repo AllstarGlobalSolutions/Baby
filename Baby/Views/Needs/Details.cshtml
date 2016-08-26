@@ -11,7 +11,7 @@
 	<hr />
 	<dl class="dl-horizontal">
 		<dt>
-			@Html.DisplayNameFor( model => model.NeedType.Description )
+			Need Type @*Html.DisplayNameFor( model => model.NeedType.Description )*@
 		</dt>
 
 		<dd>
@@ -19,7 +19,7 @@
 		</dd>
 
 		<dt>
-			@Html.DisplayNameFor( model => model.Region.Name )
+			Region @*Html.DisplayNameFor( model => model.Region.Name )*@
 		</dt>
 
 		<dd>
@@ -27,7 +27,7 @@
 		</dd>
 
 		<dt>
-			@Html.DisplayNameFor( model => model.Country.Name )
+			Country @*Html.DisplayNameFor( model => model.Country.Name )*@
 		</dt>
 
 		<dd>
@@ -43,11 +43,19 @@
 		</dd>
 
 		<dt>
-			Image
+			Image 1
 		</dt>
 
 		<dd>
-			<img src="/File?id=@Model.FileId" width="200" alt="image" />
+			<img src="/File?id=@Model.Image1Id" width="200" alt="image" />
+		</dd>
+
+		<dt>
+			Image 2
+		</dt>
+
+		<dd>
+			<img src="/File?id=@Model.Image2Id" width="200" alt="image" />
 		</dd>
 
 		<dt>
@@ -107,19 +115,11 @@
 		</dd>
 
 		<dt>
-			@Html.DisplayNameFor( model => model.AdditionalTags )
+			@Html.DisplayNameFor( model => model.Tags )
 		</dt>
 
 		<dd>
-			@Html.DisplayFor( model => model.AdditionalTags )
-		</dd>
-
-		<dt>
-			@Html.DisplayNameFor( model => model.City )
-		</dt>
-
-		<dd>
-			@Html.DisplayFor( model => model.City )
+			@Html.DisplayFor( model => model.Tags )
 		</dd>
 
 	</dl>

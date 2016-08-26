@@ -11,7 +11,7 @@
 @using ( Html.BeginForm( "Create", "Advertisements", FormMethod.Post, new { enctype = "multipart/form-data" } ) )
 {
 	@Html.AntiForgeryToken()
-	@Html.HiddenFor( model => model.AdvertiserId )
+	@Html.HiddenFor( model => model.AdvertiserId, new { value = ViewBag.AdvertiserId } )
 	@Html.HiddenFor( model => model.FileId, new { value = "" } );
 
 	<div class="form-horizontal">

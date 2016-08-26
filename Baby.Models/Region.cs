@@ -25,12 +25,12 @@
 		public string Name { get; set; }
 
 		[SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]
-		public virtual ICollection<ApplicationUser> Users { get; set; }
+		public ICollection<ApplicationUser> Users { get; set; }
 
 		[SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]
-		public virtual ICollection<Need> Needs { get; set; }
+		public ICollection<Need> Needs { get; set; }
 
 		[SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]
-		public virtual ICollection<Advertisement> Advertisements { get; set; }
+		public ICollection<Advertisement> Advertisements { get; set; }
 	}
 }

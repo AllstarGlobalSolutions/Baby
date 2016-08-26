@@ -26,6 +26,9 @@
 		[StringLength( 30 )]
 		public string Name { get; set; }
 
+		[Required]
+		public string About { get; set; }
+
 		[SuppressMessage( "Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly" )]
 		public virtual ICollection<Donation> Donations { get; set; }
 

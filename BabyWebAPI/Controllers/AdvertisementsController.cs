@@ -11,6 +11,7 @@
 	using System.Web.Http.Description;
 	using Baby.Models;
 
+	[RoutePrefix( "api/Advertisements" )]
 	public class AdvertisementsController : ApiController
 	{
 		private ApplicationDbContext db = new ApplicationDbContext();

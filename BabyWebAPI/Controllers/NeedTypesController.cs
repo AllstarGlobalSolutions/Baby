@@ -11,14 +11,15 @@ using Baby.Models;
 
 namespace BabyWebAPI.Controllers
 {
-    public class NeedTypesController : ApiController
+	[RoutePrefix( "api/NeedTypes" )]
+	public class NeedTypesController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/NeedTypes
         public IEnumerable<NeedType> GetNeedTypes()
         {
-            return db.NeedTypes.OrderBy( nt => nt.Description ).ToList();
+            return db.NeedTypes.OrderBy( n => n.Description ).ToList();
         }
 
         // GET: api/NeedTypes/5

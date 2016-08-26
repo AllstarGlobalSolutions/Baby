@@ -13,7 +13,8 @@ using Baby.Models;
 
 namespace BabyWebAPI.Controllers
 {
-    public class CountriesController : ApiController
+	[RoutePrefix( "api/Countries" )]
+	public class CountriesController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 

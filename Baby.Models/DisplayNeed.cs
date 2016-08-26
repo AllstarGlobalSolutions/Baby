@@ -16,6 +16,7 @@
 
 		public virtual ApplicationUser User { get; set; }
 
+		public Guid NeedId { get; set; }
 		public virtual Need Need { get; set; }
 	}
 }
